@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xxsuit Bio</title>
+    
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome (Ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts (Space Grotesk) -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <!-- Configurações do Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        glass: 'rgba(255, 255, 255, 0.05)', 
+                        glassHover: 'rgba(255, 255, 255, 0.1)',
+                        border: 'rgba(255, 255, 255, 0.4)', 
+                        accent: '#a855f7', // Roxo neon
+                        money: '#10b981', // Verde Dólar
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, boxShadow: '0 0 20px rgba(168, 85, 247, 0.5)' },
+                            '50%': { opacity: .5, boxShadow: '0 0 10px rgba(168, 85, 247, 0.2)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: 0, transform: 'translateY(20px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Cursor de Mira Personalizado */
+        body {
+            background-color: #050505;
+            overflow-x: hidden;
+            color: white;
+            perspective: 1000px;
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5'><line x1='12' y1='4' x2='12' y2='20' /><line x1='4' y1='12' x2='20' y2='12' /><circle cx='12' cy='12' r='8' stroke='black' stroke-width='1.5' fill='none'/></svg>") 12 12, auto;
+        }
+
+        a, button {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5'><line x1='12' y1='4' x2='12' y2='20' /><line x1='4' y1='12' x2='20' y2='12' /><circle cx='12' cy='12' r='8' stroke='rgba(168, 85, 247, 1)' stroke-width='1.5' fill='none'/></svg>") 12 12, pointer;
+        }
+
+        .bg-noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+        
+        .tilt-inner {
+            transform: translateZ(20px);
+        }
+
+        .glow-hover {
+            transition: all 0.3s ease;
+        }
+        .glow-hover:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
+            border-color: rgba(168, 85, 247, 0.5);
+            transform: translateY(-2px) translateZ(10px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 5px;
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: #a855f7;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        #bg-canvas, #money-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        #bg-canvas { z-index: -2; }
+        #money-canvas { z-index: -1; }
+
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 50;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+        
+        /* Utilitários de Animação */
+        .anim-delay-100 { animation-delay: 100ms; }
+        .anim-delay-200 { animation-delay: 200ms; }
+        .anim-delay-300 { animation-delay: 300ms; }
+        .anim-delay-400 { animation-delay: 400ms; }
+        .anim-delay-500 { animation-delay: 500ms; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 selection:bg-accent selection:text-white">
+
+    <canvas id="bg-canvas"></canvas>
+    <canvas id="money-canvas"></canvas> <!-- Canvas para os dólares -->
+    <div class="bg-noise"></div>
+
+    <!-- Video de Fundo com Link do Discord -->
+    <video id="bg-video" autoplay loop playsinline class="fixed inset-0 w-full h-full object-cover z-[-3] opacity-50 blur-sm scale-105">
+        <source src="https://cdn.discordapp.com/attachments/1457948921199329370/1458621961042137301/WhatsApp_Video_2026-01-07_at_21.40.13.mp4?ex=69604f0f&is=695efd8f&hm=4200c94587ca220fb490977e32e6f7bbb7328dfb8ae95b58a30a320662cea0bd&" type="video/mp4">
+        <div class="fixed inset-0 bg-gray-900"></div>
+    </video>
+
+    <!-- Overlay invisível para ativar o som no primeiro clique -->
+    <div id="unmute-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 cursor-pointer text-white text-sm font-light tracking-widest hover:bg-black/30 transition-all">
+        [ CLIQUE PARA ENTRAR ]
+    </div>
+
+    <!-- Container Principal -->
+    <main id="tilt-container" class="w-full max-w-md relative tilt-card opacity-0 transition-opacity duration-1000 ease-in-out">
+        
+        <!-- Cartão de Vidro Retangular -->
+        <!-- Alterado bg-black/60 para bg-black/30 (Mais transparente) -->
+        <div class="bg-black/30 backdrop-blur-3xl border-[1px] border-white/30 rounded-xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.7)] overflow-hidden relative group">
+            
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent to-transparent opacity-50"></div>
+            <div class="absolute -inset-[100%] bg-gradient-to-r from-transparent via-white/5 to-transparent rotate-45 pointer-events-none"></div>
+
+            <div class="flex flex-col items-center text-center tilt-inner">
+                
+                <!-- Foto de Perfil Sincronizada -->
+                <div class="relative mb-4 opacity-0 animate-fade-in-up">
+                    <div class="absolute inset-0 rounded-full border-2 border-dashed border-accent animate-spin-slow"></div>
+                    <img id="discord-avatar" src="https://i.pinimg.com/736x/e2/18/30/e218300db33b500839c84a64ad3541b5.jpg" 
+                         alt="Profile" 
+                         class="w-28 h-28 rounded-full border-4 border-[#ffffff]/10 object-cover relative z-10 shadow-lg">
+                    
+                    <div id="discord-status" class="absolute bottom-2 right-2 w-5 h-5 bg-gray-500 rounded-full border-4 border-[#1a1a1a] z-20 shadow-lg" title="Carregando..."></div>
+                </div>
+
+                <!-- Nome -->
+                <div class="flex items-center gap-2 mb-1 opacity-0 animate-fade-in-up anim-delay-100">
+                    <h1 class="text-3xl font-bold tracking-tight text-white drop-shadow-md">xxsuit</h1>
+                    <span class="text-blue-400 text-lg drop-shadow-md" title="Verificado">
+                        <i class="fas fa-check-circle"></i>
+                    </span>
+                </div>
+
+                <!-- Typewriter -->
+                <div class="h-6 mb-6 text-gray-300 font-mono text-sm font-medium drop-shadow-sm opacity-0 animate-fade-in-up anim-delay-200">
+                    <span id="typewriter"></span><span class="cursor-blink"></span>
+                </div>
+
+                <!-- Status de Atividade (Genérico) -->
+                <!-- Inicialmente oculto com 'hidden', mostrado via JS se houver atividade -->
+                <div id="activity-card" class="hidden flex items-center gap-3 bg-black/30 border border-white/5 rounded-xl p-3 w-full mb-8 hover:bg-black/50 transition-all cursor-default shadow-inner backdrop-blur-md opacity-0 animate-fade-in-up anim-delay-300">
+                    
+                    <div class="relative w-12 h-12 flex-shrink-0">
+                        <img id="activity-img" src="" alt="Activity Art" class="w-full h-full rounded-md object-cover hidden shadow-md">
+                        <div id="activity-icon-placeholder" class="w-full h-full bg-black/40 rounded-md flex items-center justify-center text-accent shadow-lg hidden">
+                            <i id="activity-default-icon" class="fas fa-gamepad text-xl"></i>
+                        </div>
+                    </div>
+
+                    <div class="text-left flex-1 min-w-0 overflow-hidden">
+                        <!-- Label da Atividade (ex: SPOTIFY, VS CODE, LOL) -->
+                        <p id="activity-name" class="text-[10px] text-green-400 uppercase tracking-wider font-bold">Activity</p>
+                        
+                        <div class="relative overflow-hidden h-5">
+                            <p id="activity-details" class="text-sm font-medium text-white whitespace-nowrap">...</p>
+                        </div>
+                        <p id="activity-state" class="text-xs text-gray-400 truncate">...</p>
+                    </div>
+
+                    <!-- Visualizer (só aparece se for musica) -->
+                    <div id="music-visualizer" class="hidden gap-1 items-end h-4 opacity-70">
+                        <div class="w-1 bg-green-500 h-full animate-[pulse_1s_ease-in-out_infinite]"></div>
+                        <div class="w-1 bg-green-500 h-2/3 animate-[pulse_1.2s_ease-in-out_infinite]"></div>
+                        <div class="w-1 bg-green-500 h-full animate-[pulse_0.8s_ease-in-out_infinite]"></div>
+                    </div>
+                </div>
+
+                <!-- Links Sociais -->
+                <div class="w-full space-y-3 opacity-0 animate-fade-in-up anim-delay-400">
+                    
+                    <a href="https://instagram.com/rezend.es" target="_blank" class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 text-gray-100 glow-hover group shadow-sm backdrop-blur-sm transition-transform hover:scale-[1.02]">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-instagram text-2xl group-hover:text-pink-500 transition-colors drop-shadow"></i>
+                            <span class="font-medium">@rezend.es</span>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs opacity-50"></i>
+                    </a>
+
+                    <button onclick="copyDiscord('xxsuit')" class="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 text-gray-100 glow-hover group cursor-pointer shadow-sm backdrop-blur-sm transition-transform hover:scale-[1.02]" title="ID: 1427767458139345180">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-discord text-2xl group-hover:text-indigo-500 transition-colors drop-shadow"></i>
+                            <div class="text-left">
+                                <span class="font-medium block">@xxsuit</span>
+                                <span class="text-xs text-gray-400">Clique para copiar</span>
+                            </div>
+                        </div>
+                        <i class="far fa-copy text-xs opacity-50"></i>
+                    </button>
+
+                    <a href="https://open.spotify.com/user/31i3rk6b5vzacy5jj75wkaniebuy" target="_blank" class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 text-gray-100 glow-hover group shadow-sm backdrop-blur-sm transition-transform hover:scale-[1.02]">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-spotify text-2xl group-hover:text-green-500 transition-colors drop-shadow"></i>
+                            <span class="font-medium">Spotify Perfil</span>
+                        </div>
+                        <i class="fas fa-external-link-alt text-xs opacity-50"></i>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Footer Removido (Contador de Visitantes) -->
+            <div class="text-center mt-8 opacity-0 animate-fade-in-up anim-delay-500">
+                 <p class="text-[10px] text-gray-400 font-light tracking-widest">© 2026 xxsuit</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast" class="toast flex items-center justify-center gap-2">
+        <i class="fas fa-check-circle text-green-400"></i>
+        <span>Discord copiado!</span>
+    </div>
+
+    <script>
+        const DISCORD_ID = "1427767458139345180"; 
+        
+        // Elementos da UI
+        const activityCard = document.getElementById("activity-card");
+        const activityImg = document.getElementById("activity-img");
+        const activityIconPlaceholder = document.getElementById("activity-icon-placeholder");
+        const activityDefaultIcon = document.getElementById("activity-default-icon");
+        const activityName = document.getElementById("activity-name");
+        const activityDetails = document.getElementById("activity-details");
+        const activityState = document.getElementById("activity-state");
+        const musicVisualizer = document.getElementById("music-visualizer");
+        
+        const discordStatusDiv = document.getElementById("discord-status");
+        const discordAvatar = document.getElementById("discord-avatar");
+        const bgVideo = document.getElementById("bg-video");
+        const unmuteOverlay = document.getElementById("unmute-overlay");
+        const mainContainer = document.getElementById("tilt-container");
+        // Removed visitCounter reference
+
+        // Lógica de Áudio e Entrada
+        unmuteOverlay.addEventListener('click', () => {
+            bgVideo.muted = false;
+            bgVideo.play().catch(e => console.log("Erro ao reproduzir áudio:", e));
+            unmuteOverlay.style.opacity = '0';
+            setTimeout(() => {
+                unmuteOverlay.style.display = 'none';
+                mainContainer.style.opacity = '1';
+            }, 500);
+        });
+
+        // 1. Verificar Lanyard
+        async function checkLanyardStatus() {
+            try {
+                const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+                const data = await response.json();
+
+                if (!data.success) return; // Se falhar, só não mostra nada
+
+                updatePresence(data.data);
+                connectLanyardWebSocket();
+
+            } catch (error) {
+                console.error("Erro Lanyard:", error);
+            }
+        }
+
+        // 2. WebSocket
+        function connectLanyardWebSocket() {
+            const ws = new WebSocket("wss://api.lanyard.rest/socket");
+            let heartbeatInterval;
+
+            ws.onopen = () => {
+                ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: DISCORD_ID } }));
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                const { op, t, d } = data;
+
+                if (op === 1) {
+                    heartbeatInterval = setInterval(() => {
+                        ws.send(JSON.stringify({ op: 3 }));
+                    }, d.heartbeat_interval);
+                }
+
+                if (t === "INIT_STATE" || t === "PRESENCE_UPDATE") {
+                    updatePresence(d);
+                }
+            };
+
+            ws.onclose = () => {
+                clearInterval(heartbeatInterval);
+                setTimeout(connectLanyardWebSocket, 5000);
+            };
+        }
+
+        function updatePresence(data) {
+            const user = data[DISCORD_ID] || data; 
+            if (!user) return;
+
+            // Avatar Update
+            if (user.discord_user && user.discord_user.avatar) {
+                const avatarUrl = `https://cdn.discordapp.com/avatars/${user.discord_user.id}/${user.discord_user.avatar}.png?size=512`;
+                if (discordAvatar.src !== avatarUrl) {
+                    discordAvatar.src = avatarUrl;
+                }
+            }
+
+            // Status Color
+            if (user.discord_status) {
+                const statusColors = { online: "bg-green-500", idle: "bg-yellow-500", dnd: "bg-red-500", offline: "bg-gray-500" };
+                const colorClass = statusColors[user.discord_status] || "bg-gray-500";
+                discordStatusDiv.className = `absolute bottom-2 right-2 w-5 h-5 ${colorClass} rounded-full border-4 border-[#1a1a1a] z-20 shadow-lg`;
+            }
+
+            // --- Lógica de Atividade Genérica ---
+            // Filtra 'Custom Status' (tipo 4) que é só texto
+            const activity = user.activities.find(a => a.type !== 4);
+
+            if (activity) {
+                // Tem atividade: Mostrar Card
+                activityCard.classList.remove("hidden");
+                activityCard.classList.add("flex");
+
+                // Nome da Atividade (Ex: Spotify, Visual Studio Code)
+                activityName.innerText = activity.name;
+
+                // Detalhes (Ex: Música, Nome do Arquivo)
+                activityDetails.innerText = activity.details || "";
+                
+                // Estado (Ex: Artista, Workspace)
+                activityState.innerText = activity.state || "";
+
+                // Imagem
+                let imageUrl = null;
+                
+                if (activity.id === "spotify:1" && user.spotify) {
+                    // Caso Especial: Spotify
+                    imageUrl = user.spotify.album_art_url;
+                    activityName.className = "text-[10px] text-green-400 uppercase tracking-wider font-bold";
+                    activityDefaultIcon.className = "fab fa-spotify text-xl";
+                    musicVisualizer.classList.remove("hidden"); // Mostrar visualizer
+                    musicVisualizer.classList.add("flex");
+                } else {
+                    // Outros Apps/Jogos
+                    activityName.className = "text-[10px] text-blue-400 uppercase tracking-wider font-bold";
+                    musicVisualizer.classList.add("hidden"); // Esconder visualizer
+                    musicVisualizer.classList.remove("flex");
+
+                    if (activity.assets && activity.assets.large_image) {
+                        if (activity.assets.large_image.startsWith("mp:")) {
+                             imageUrl = activity.assets.large_image.replace("mp:", "https://media.discordapp.net/");
+                        } else {
+                             imageUrl = `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.png`;
+                        }
+                    }
+                    
+                    // Ícone padrão baseado no nome se não tiver imagem
+                    if(activity.name.toLowerCase().includes("code")) activityDefaultIcon.className = "fas fa-code text-xl";
+                    else if(activity.name.toLowerCase().includes("game")) activityDefaultIcon.className = "fas fa-gamepad text-xl";
+                    else activityDefaultIcon.className = "fas fa-bolt text-xl";
+                }
+
+                if (imageUrl) {
+                    activityImg.src = imageUrl;
+                    activityImg.classList.remove("hidden");
+                    activityIconPlaceholder.classList.add("hidden");
+                } else {
+                    activityImg.classList.add("hidden");
+                    activityIconPlaceholder.classList.remove("hidden");
+                }
+
+            } else {
+                // Nenhuma atividade: Esconder Card
+                activityCard.classList.add("hidden");
+                activityCard.classList.remove("flex");
+            }
+        }
+
+        checkLanyardStatus();
+
+
+        // --- Efeitos Visuais e Utils ---
+        
+        // Tilt Effect
+        const card = document.getElementById('tilt-container');
+        const body = document.body;
+        body.addEventListener('mousemove', (e) => {
+            if (window.innerWidth < 768) return; 
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25; 
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25; 
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+        body.addEventListener('mouseleave', () => { card.style.transform = `rotateY(0deg) rotateX(0deg)`; });
+        body.addEventListener('mouseenter', () => { card.style.transition = 'none'; });
+
+        // Typewriter
+        const textElement = document.getElementById('typewriter');
+        const phrases = ["Dev.", "1V1", "Form. Photoshop 21", "Py. Js."];
+        let phraseIndex = 0; let charIndex = 0; let isDeleting = false; let typeSpeed = 100;
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            if (isDeleting) {
+                textElement.innerText = currentPhrase.substring(0, charIndex - 1);
+                charIndex--; typeSpeed = 50;
+            } else {
+                textElement.innerText = currentPhrase.substring(0, charIndex + 1);
+                charIndex++; typeSpeed = 100;
+            }
+            if (!isDeleting && charIndex === currentPhrase.length) { isDeleting = true; typeSpeed = 2000; }
+            else if (isDeleting && charIndex === 0) { isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; typeSpeed = 500; }
+            setTimeout(type, typeSpeed);
+        }
+        document.addEventListener('DOMContentLoaded', type);
+
+        // Copy Discord
+        function copyDiscord(discordId) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(discordId).then(() => showToast(`Copiado: ${discordId}`)).catch(() => fallbackCopy(discordId));
+            } else { fallbackCopy(discordId); }
+        }
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea"); textArea.value = text;
+            document.body.appendChild(textArea); textArea.select();
+            try { document.execCommand('copy'); showToast(`Copiado: ${text}`); } catch (err) {}
+            document.body.removeChild(textArea);
+        }
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            const span = toast.querySelector("span");
+            span.innerText = message; toast.className = "toast show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        // --- SISTEMA DE PARTÍCULAS DUPLO (Roxas + Dólares) ---
+        
+        // 1. Partículas Roxas (bg-canvas)
+        const canvasBg = document.getElementById('bg-canvas');
+        const ctxBg = canvasBg.getContext('2d');
+        
+        // 2. Dólares Caindo (money-canvas)
+        const canvasMoney = document.getElementById('money-canvas');
+        const ctxMoney = canvasMoney.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        let moneyParticles = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvasBg.width = width;
+            canvasBg.height = height;
+            canvasMoney.width = width;
+            canvasMoney.height = height;
+        }
+
+        class PurpleParticle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2.5; 
+                this.opacity = Math.random() * 0.7 + 0.3;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0) this.x = width; if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height; if (this.y > height) this.y = 0;
+            }
+            draw() {
+                ctxBg.beginPath();
+                ctxBg.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctxBg.fillStyle = `rgba(168, 85, 247, ${this.opacity})`;
+                ctxBg.shadowBlur = 10; ctxBg.shadowColor = "rgba(168, 85, 247, 0.8)";
+                ctxBg.fill(); ctxBg.shadowBlur = 0;
+            }
+        }
+
+        class MoneyParticle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height - height; // Começa fora da tela ou espalhado
+                this.vy = Math.random() * 1.5 + 0.5; // Mais devagar (era 2 + 1)
+                this.size = Math.random() * 14 + 10; // Tamanho da fonte
+                this.opacity = Math.random() * 0.6 + 0.2;
+                this.text = "$";
+            }
+            update() {
+                this.y += this.vy;
+                if (this.y > height) {
+                    this.y = -20;
+                    this.x = Math.random() * width;
+                }
+            }
+            draw() {
+                ctxMoney.font = `${this.size}px 'Space Grotesk'`;
+                // Dólar Roxo (Cor Accent)
+                ctxMoney.fillStyle = `rgba(168, 85, 247, ${this.opacity})`; 
+                ctxMoney.shadowBlur = 5;
+                ctxMoney.shadowColor = "rgba(168, 85, 247, 0.5)";
+                ctxMoney.fillText(this.text, this.x, this.y);
+                ctxMoney.shadowBlur = 0;
+            }
+        }
+
+        function initParticles() {
+            particles = []; moneyParticles = [];
+            for (let i = 0; i < 70; i++) particles.push(new PurpleParticle());
+            for (let i = 0; i < 15; i++) moneyParticles.push(new MoneyParticle()); // Menos dólares (era 30)
+        }
+
+        function animate() {
+            ctxBg.clearRect(0, 0, width, height);
+            ctxMoney.clearRect(0, 0, width, height);
+            
+            particles.forEach(p => { p.update(); p.draw(); });
+            moneyParticles.forEach(m => { m.update(); m.draw(); });
+            
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => { resize(); initParticles(); });
+        resize(); initParticles(); animate();
+    </script>
+</body>
+</html>
