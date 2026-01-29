@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SuitCds V11 Mobile Fix</title>
+    <title>SuitCds V12</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,9 +26,7 @@
         }
 
         /* Footer Seguro */
-        .safe-footer {
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+        .safe-footer { padding-bottom: env(safe-area-inset-bottom); }
         
         /* Slots */
         .v-slot { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.05); }
@@ -44,7 +42,6 @@
         .toast.show { transform: translateY(0) translateX(-50%); opacity: 1; }
     </style>
 </head>
-<!-- Adicionado pb-48 no body para garantir scroll -->
 <body class="min-h-screen text-white font-sans pb-48 selection:bg-indigo-500/40">
 
     <!-- AUDIO ENGINE -->
@@ -65,7 +62,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-white tracking-tight">SuitCds</h1>
-                    <p class="text-[10px] text-zinc-400 font-bold tracking-widest uppercase">V11 Mobile Fix</p>
+                    <p class="text-[10px] text-zinc-400 font-bold tracking-widest uppercase">V12 Restoration</p>
                 </div>
             </div>
             <div class="px-3 py-1 bg-zinc-900 rounded-full border border-zinc-800 text-[10px] font-mono text-zinc-500 flex items-center gap-2">
@@ -272,21 +269,13 @@
             }
         });
 
-        // --- FILE VALIDATOR ---
-        function isValidMedia(file) {
-            if(file.type.startsWith('audio/') || file.type.startsWith('video/')) return true;
-            const ext = file.name.split('.').pop().toLowerCase();
-            return ['mp3','wav','m4a','mp4','mov','aac','flac','ogg','wma'].includes(ext);
-        }
-
         // --- VINHETA LOGIC ---
         async function loadVinheta(index, input) {
             wakeUp();
             const file = input.files[0];
             if(!file) return;
 
-            if(!isValidMedia(file)) { toast("Não é áudio/vídeo", "err"); input.value=''; return; }
-
+            // REMOVI O FILTRO RIGOROSO. AGORA TENTA LER TUDO.
             const nameEl = document.getElementById(`name-${index+1}`);
             nameEl.innerText = "Carregando...";
             
@@ -297,7 +286,9 @@
                 updateSlotUI(index, true);
                 toast(`Vinheta ${index+1} OK!`);
             } catch(e) {
-                toast("Erro no arquivo", "err");
+                // Se o decode falhar, aí sim é erro
+                console.error(e);
+                toast("Arquivo Inválido/DRM", "err");
                 nameEl.innerText = "Erro";
             }
             input.value = ''; 
@@ -339,8 +330,9 @@
         // --- TRACKS & ZIP ---
         document.getElementById('inp-music').addEventListener('change', function() {
             wakeUp();
-            const files = Array.from(this.files).filter(isValidMedia);
-            if(files.length) { addTracks(files); toast(`${files.length} músicas`); }
+            // REMOVI O FILTRO RIGOROSO
+            const files = Array.from(this.files);
+            if(files.length) { addTracks(files); toast(`${files.length} arquivos`); }
             this.value='';
         });
 
@@ -349,8 +341,9 @@
             try {
                 const z=new JSZip(); const c=await z.loadAsync(f); const fls=[];
                 for(let k of Object.keys(c.files)){
-                    if(!c.files[k].dir && !k.startsWith('__') && isValidMedia({name:k, type:''})) {
+                    if(!c.files[k].dir && !k.startsWith('__')) {
                         const b=await c.files[k].async("blob"); 
+                        // Tenta adivinhar MIME, mas deixa passar
                         fls.push(new File([b],k.split('/').pop(),{type:'audio/mpeg'}));
                     }
                 }
@@ -381,17 +374,15 @@
             `;
 
             if(activeVinhetas > 1) {
-                // Modo Multi (Forçado)
                 if(logicSel.value !== 'multi') {
                     logicSel.innerHTML = '<option value="multi">✨ Multi-Brechas (Auto)</option>';
                     logicSel.disabled = true;
                 }
             } else {
-                // Modo Single (Restaura opções e valor salvo)
                 if(logicSel.disabled || logicSel.value === 'multi') {
                     logicSel.innerHTML = logicOpts;
                     logicSel.disabled = false;
-                    logicSel.value = savedSingleMode; // RESTAURA A ESCOLHA DO USUÁRIO
+                    logicSel.value = savedSingleMode;
                 }
             }
 
@@ -462,7 +453,6 @@
 
             profile.sort((a,b) => a.energy - b.energy);
             const selected = [];
-            // Ignora primeiros 2s (intro attack)
             const candidates = profile.filter(p => p.time > 2);
 
             for(let cand of candidates) {
@@ -507,7 +497,6 @@
                             let limit = 0; 
                             if (logic === 'smart30') limit = 30;
                             if (logic === 'smart60') limit = 60;
-                            // avoidEndSecs = 15s (sempre evita o final)
                             spots = findSpots(mb.getChannelData(0), mb.sampleRate, activeVinhetas.length, limit, 15, 15);
                             if (spots.length === 0) spots = [0];
                         }
@@ -590,8 +579,9 @@
         window.playT = (id) => { const t = tracks.find(x => x.id === id); if(playingId===id) { document.getElementById('preview-audio').pause(); playingId=null; } else { document.getElementById('preview-audio').src=URL.createObjectURL(t.blob); document.getElementById('preview-audio').play(); playingId=id; } updateState(); }
         window.delT = (id) => { tracks = tracks.filter(t => t.id !== id); updateState(); }
         document.getElementById('preview-audio').onended = () => { playingId=null; updateState(); };
-        window.downloadZip = async () => { const z = new JSZip(); let c=0; tracks.forEach(t=>{ if(t.status==='done'&&t.blob) { z.file(`${t.file.name.replace(/\.[^/.]+$/, "")}_Mix.wav`, t.blob); c++; } }); if(c>0) { toast("Gerando ZIP..."); const b=await z.generateAsync({type:"blob"}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download="SuitCds_Multi.zip"; document.body.appendChild(a); a.click(); document.body.removeChild(a); } };
+        window.downloadZip = async () => { const z = new JSZip(); let c=0; tracks.forEach(t=>{ if(t.status==='done'&&t.blob) { z.file(`${t.file.name.replace(/\.[^/.]+$/, "")}_Mix.wav`, t.blob); c++; } }); if(c>0) { toast("Gerando ZIP..."); const b=await z.generateAsync({type:"blob"}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download="SuitCds_Mix.zip"; document.body.appendChild(a); a.click(); document.body.removeChild(a); } };
     </script>
 </body>
 </html>
+
 
