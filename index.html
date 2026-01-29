@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SuitCds V13 Livre</title>
+    <title>SuitCds V17 Universal</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,27 +15,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
-        body { background-color: #020202; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #050505; -webkit-tap-highlight-color: transparent; }
         
-        /* Vidro Fosco */
         .glass { 
-            background: rgba(25, 25, 30, 0.85); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255,255,255,0.08); 
+            background: rgba(30, 30, 35, 0.85); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255,255,255,0.1); 
         }
 
-        .safe-footer { padding-bottom: env(safe-area-inset-bottom); }
+        .safe-footer { padding-bottom: calc(env(safe-area-inset-bottom) + 20px); }
         
-        .v-slot { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.05); }
-        .v-slot.active { background: rgba(79, 70, 229, 0.2); border-color: rgba(99, 102, 241, 0.6); }
+        .v-slot { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); }
+        .v-slot.active { background: rgba(79, 70, 229, 0.15); border-color: rgba(99, 102, 241, 0.6); }
         
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .hidden-input { width: 0.1px; height: 0.1px; opacity: 0; position: absolute; z-index: -1; }
+        /* INPUT OCULTO MAS ACESSÍVEL */
+        .hidden-input { display: none; }
 
-        .toast { transform: translateY(150%) translateX(-50%); bottom: 100px; left: 50%; opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast { transform: translateY(150%) translateX(-50%); bottom: 100px; left: 50%; opacity: 0; transition: all 0.3s ease; }
         .toast.show { transform: translateY(0) translateX(-50%); opacity: 1; }
     </style>
 </head>
@@ -43,7 +43,19 @@
 
     <audio id="preview-audio" playsinline webkit-playsinline></audio>
 
-    <div id="toast" class="fixed z-[70] w-max max-w-[90%] px-6 py-4 rounded-2xl glass flex items-center gap-3 shadow-2xl toast pointer-events-none border-t border-white/10">
+    <!-- INPUTS SEM FILTRO 'ACCEPT' PARA MOSTRAR TODOS OS ARQUIVOS -->
+    <input type="file" id="inp-v1" class="hidden-input">
+    <input type="file" id="inp-v2" class="hidden-input">
+    <input type="file" id="inp-v3" class="hidden-input">
+    <input type="file" id="inp-v4" class="hidden-input">
+    
+    <!-- INPUT MÚLTIPLO SEM FILTRO -->
+    <input type="file" id="inp-music" class="hidden-input" multiple>
+    
+    <!-- INPUT ZIP -->
+    <input type="file" id="inp-zip" class="hidden-input">
+
+    <div id="toast" class="fixed z-[70] w-max max-w-[90%] px-6 py-4 rounded-full glass flex items-center gap-3 shadow-2xl toast pointer-events-none border-t border-white/20">
         <div id="toast-icon"></div>
         <div id="toast-msg" class="text-sm font-bold tracking-wide"></div>
     </div>
@@ -52,17 +64,17 @@
     <header class="py-5 px-5 border-b border-white/10 bg-black/90 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-2xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                    <i data-lucide="unlock" class="w-6 h-6 text-white"></i>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-green-600 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/20">
+                    <i data-lucide="folder-open" class="w-6 h-6 text-white"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-white tracking-tight">SuitCds</h1>
-                    <p class="text-[10px] text-zinc-400 font-bold tracking-widest uppercase">V13 Unrestricted</p>
+                    <p class="text-[10px] text-zinc-400 font-bold tracking-widest uppercase">V17 Universal</p>
                 </div>
             </div>
             <div class="px-3 py-1 bg-zinc-900 rounded-full border border-zinc-800 text-[10px] font-mono text-zinc-500 flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                LIVRE
+                UNLOCKED
             </div>
         </div>
     </header>
@@ -80,64 +92,59 @@
             
             <div class="grid grid-cols-2 gap-2">
                 <!-- SLOT 1 -->
-                <label id="slot-1" class="v-slot glass rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]">
-                    <!-- SEM ACCEPT - ACEITA TUDO -->
-                    <input type="file" class="hidden-input" onchange="loadVinheta(0, this)">
-                    <div id="icon-1" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 transition-colors border border-white/5">
+                <div onclick="document.getElementById('inp-v1').click()" class="v-slot rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]" id="slot-1">
+                    <div id="icon-1" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 border border-white/5">
                         <span class="font-bold text-xs">1</span>
                     </div>
                     <span id="name-1" class="text-[10px] font-medium text-zinc-400 text-center truncate w-full px-2">Adicionar</span>
-                    <button onclick="clearVinheta(0, event)" id="btn-clr-1" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-3 h-3"></i></button>
-                </label>
+                    <button onclick="clearVinheta(0, event)" id="btn-clr-1" class="hidden absolute top-0 right-0 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
 
                 <!-- SLOT 2 -->
-                <label id="slot-2" class="v-slot glass rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]">
-                    <input type="file" class="hidden-input" onchange="loadVinheta(1, this)">
-                    <div id="icon-2" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 transition-colors border border-white/5">
+                <div onclick="document.getElementById('inp-v2').click()" class="v-slot rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]" id="slot-2">
+                    <div id="icon-2" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 border border-white/5">
                         <span class="font-bold text-xs">2</span>
                     </div>
                     <span id="name-2" class="text-[10px] font-medium text-zinc-400 text-center truncate w-full px-2">Adicionar</span>
-                    <button onclick="clearVinheta(1, event)" id="btn-clr-2" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-3 h-3"></i></button>
-                </label>
+                    <button onclick="clearVinheta(1, event)" id="btn-clr-2" class="hidden absolute top-0 right-0 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
 
                 <!-- SLOT 3 -->
-                <label id="slot-3" class="v-slot glass rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]">
-                    <input type="file" class="hidden-input" onchange="loadVinheta(2, this)">
-                    <div id="icon-3" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 transition-colors border border-white/5">
+                <div onclick="document.getElementById('inp-v3').click()" class="v-slot rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]" id="slot-3">
+                    <div id="icon-3" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 border border-white/5">
                         <span class="font-bold text-xs">3</span>
                     </div>
                     <span id="name-3" class="text-[10px] font-medium text-zinc-400 text-center truncate w-full px-2">Adicionar</span>
-                    <button onclick="clearVinheta(2, event)" id="btn-clr-3" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-3 h-3"></i></button>
-                </label>
+                    <button onclick="clearVinheta(2, event)" id="btn-clr-3" class="hidden absolute top-0 right-0 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
 
                 <!-- SLOT 4 -->
-                <label id="slot-4" class="v-slot glass rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]">
-                    <input type="file" class="hidden-input" onchange="loadVinheta(3, this)">
-                    <div id="icon-4" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 transition-colors border border-white/5">
+                <div onclick="document.getElementById('inp-v4').click()" class="v-slot rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]" id="slot-4">
+                    <div id="icon-4" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 border border-white/5">
                         <span class="font-bold text-xs">4</span>
                     </div>
                     <span id="name-4" class="text-[10px] font-medium text-zinc-400 text-center truncate w-full px-2">Adicionar</span>
-                    <button onclick="clearVinheta(3, event)" id="btn-clr-4" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-3 h-3"></i></button>
-                </label>
+                    <button onclick="clearVinheta(3, event)" id="btn-clr-4" class="hidden absolute top-0 right-0 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
             </div>
         </section>
 
         <!-- 2. STUDIO -->
         <section>
             <h2 class="text-xs font-bold text-zinc-500 uppercase mb-3 flex items-center gap-2 pl-1">
-                <i data-lucide="sliders" class="w-3 h-3 text-indigo-400"></i> 2. Lógica & Mixagem
+                <i data-lucide="sliders" class="w-3 h-3 text-indigo-400"></i> 2. Lógica
             </h2>
             
             <div class="grid grid-cols-2 gap-3 mb-3">
                 <div class="glass p-3 rounded-2xl">
-                    <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1.5 ml-1">Onde colocar?</label>
+                    <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1.5 ml-1">Posição</label>
                     <div class="relative">
                         <select id="sel-pos" class="w-full bg-zinc-900 text-white text-xs py-3 px-3 rounded-xl border border-zinc-700 focus:border-indigo-500 outline-none appearance-none font-bold cursor-pointer">
+                            <option value="smart30" selected>🧠 Smart (30s)</option>
                             <option value="start">▶️ Início (0:00)</option>
                             <option value="intro">⏳ Pós-Intro (15s)</option>
-                            <option value="smart30" selected>🧠 Smart (Nos 30s)</option>
-                            <option value="smart60">🧠 Smart (No 1 min)</option>
-                            <option value="smartFull">🔍 Smart (Música Toda)</option>
+                            <option value="smart60">🧠 Smart (1 min)</option>
+                            <option value="smartFull">🔍 Smart (Full)</option>
                             <option value="multi" disabled>✨ Multi (Auto)</option>
                         </select>
                         <i data-lucide="chevron-down" class="absolute right-3 top-3.5 w-3 h-3 text-zinc-500 pointer-events-none"></i>
@@ -145,7 +152,7 @@
                 </div>
 
                 <div class="glass p-3 rounded-2xl">
-                    <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1.5 ml-1">Estilo de Mix</label>
+                    <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1.5 ml-1">Estilo</label>
                     <div class="relative">
                         <select id="sel-mix" class="w-full bg-zinc-900 text-white text-xs py-3 px-3 rounded-xl border border-zinc-700 focus:border-indigo-500 outline-none appearance-none font-bold cursor-pointer">
                             <option value="ducking">📻 Rádio (Suave)</option>
@@ -165,12 +172,11 @@
                     <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-0.5">Efeitos SFX</label>
                     <select id="sel-sfx" class="w-full bg-transparent text-sm font-bold text-white outline-none appearance-none cursor-pointer py-1">
                         <option value="none">🚫 Nenhum</option>
-                        <option value="airhorn">📣 Airhorn (Reggae)</option>
-                        <option value="laser">🔫 Laser Shot</option>
-                        <option value="impact">💥 Impacto (Boom)</option>
-                        <option value="riser">🚀 Riser (Subida)</option>
+                        <option value="airhorn">📣 Airhorn</option>
+                        <option value="laser">🔫 Laser</option>
+                        <option value="impact">💥 Impacto</option>
+                        <option value="riser">🚀 Riser</option>
                         <option value="siren">🚨 Sirene</option>
-                        <option value="underwater">🌊 Underwater</option>
                     </select>
                 </div>
                 <i data-lucide="chevrons-up-down" class="text-zinc-500 w-4 h-4 mr-2"></i>
@@ -184,24 +190,22 @@
             </h2>
 
             <div class="flex gap-3 mb-4">
-                <label class="flex-1 glass p-4 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-white/5 border-dashed border-2 border-zinc-800 hover:border-indigo-500/30">
-                    <!-- SEM ACCEPT -->
-                    <input type="file" id="inp-music" class="hidden-input" multiple>
+                <div onclick="document.getElementById('inp-music').click()" class="flex-1 glass p-4 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-white/5 border-dashed border-2 border-zinc-800 hover:border-indigo-500/30">
                     <i data-lucide="file-plus" class="w-6 h-6 text-indigo-400"></i>
                     <span class="text-[10px] font-bold text-zinc-300">ADD MÚSICAS</span>
-                </label>
+                </div>
 
-                <label class="flex-1 glass p-4 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-white/5 border-dashed border-2 border-zinc-800 hover:border-yellow-500/30">
-                    <input type="file" id="inp-zip" class="hidden-input"> 
+                <div onclick="document.getElementById('inp-zip').click()" class="flex-1 glass p-4 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-white/5 border-dashed border-2 border-zinc-800 hover:border-yellow-500/30">
                     <i data-lucide="archive" class="w-6 h-6 text-yellow-400"></i>
                     <span class="text-[10px] font-bold text-zinc-300">ADD ZIP</span>
-                </label>
+                </div>
             </div>
 
+            <!-- LISTA -->
             <div id="list-wrapper" class="glass rounded-2xl overflow-hidden min-h-[160px] relative transition-all pb-4">
                 <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-zinc-600 space-y-3 pointer-events-none">
                     <div class="w-16 h-16 rounded-full bg-zinc-900/50 flex items-center justify-center">
-                        <i data-lucide="unlock" class="w-8 h-8 opacity-40"></i>
+                        <i data-lucide="layers" class="w-8 h-8 opacity-40"></i>
                     </div>
                     <p class="text-xs font-medium opacity-50">Sua lista está vazia</p>
                 </div>
@@ -211,7 +215,7 @@
 
     </main>
 
-    <footer class="fixed bottom-0 left-0 right-0 bg-[#000000]/95 backdrop-blur-xl border-t border-white/10 p-5 pb-8 z-50 safe-footer shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
+    <footer class="fixed bottom-0 left-0 right-0 bg-[#000000]/95 backdrop-blur-xl border-t border-white/10 p-5 z-50 safe-footer shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
         <div class="max-w-2xl mx-auto flex gap-3">
             <button id="btn-process" onclick="startMix()" disabled class="flex-1 bg-zinc-900 text-zinc-600 py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all cursor-not-allowed border border-white/5">
                 <i data-lucide="play" class="w-5 h-5 fill-current"></i>
@@ -225,22 +229,30 @@
     </footer>
 
     <script>
-        let audioCtx;
+        // --- MOTOR V10 RESTAURADO (COM SUPORTE MULTI) ---
+        let audioCtx = null;
         let vinhetaSlots = [null, null, null, null];
         let tracks = []; 
         let isWorking = false;
         let playingId = null;
-        let savedSingleMode = 'smart30';
+        let savedSingleMode = 'smart30'; // Memória para o seletor
 
+        // INIT
         lucide.createIcons();
         
-        function wakeUp() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+        // Destrava Áudio
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
         }
-        document.body.addEventListener('touchstart', wakeUp, {passive: true});
-        document.body.addEventListener('click', wakeUp, {passive: true});
+        window.addEventListener('click', initAudio, { once: true });
+        window.addEventListener('touchstart', initAudio, { once: true });
 
+        // TOAST
         function toast(msg, type='ok') {
             const el = document.getElementById('toast');
             const icon = document.getElementById('toast-icon');
@@ -254,38 +266,41 @@
             setTimeout(()=>el.classList.remove('show'), 3000);
         }
 
-        // --- SELECTOR LOGIC ---
+        // --- HANDLERS ---
+        
+        // Lógica de Memória do Seletor
         document.getElementById('sel-pos').addEventListener('change', function() {
-            if(this.value !== 'multi') savedSingleMode = this.value;
+            if(this.value !== 'multi') {
+                savedSingleMode = this.value;
+            }
         });
 
-        // --- VINHETA (SEM VERIFICAÇÃO DE TIPO) ---
+        // Load Vinheta
         async function loadVinheta(index, input) {
-            wakeUp();
             const file = input.files[0];
-            if(!file) return;
+            if (!file) return;
+            initAudio(); // Force init
 
             const nameEl = document.getElementById(`name-${index+1}`);
             nameEl.innerText = "Lendo...";
-            
+
             try {
                 const ab = await file.arrayBuffer();
-                // Tenta decodificar qualquer coisa
-                const buf = await audioCtx.decodeAudioData(ab);
+                const buf = await audioCtx.decodeAudioData(ab); // Direct Decode (V10 style)
                 vinhetaSlots[index] = { buffer: buf, duration: buf.duration, name: file.name };
                 updateSlotUI(index, true);
                 toast(`Vinheta ${index+1} OK!`);
-            } catch(e) {
-                console.error(e);
-                toast("Não foi possível ler o áudio", "err");
+            } catch (err) {
+                console.error(err);
                 nameEl.innerText = "Erro";
+                toast("Erro ao ler arquivo", "err");
             }
-            input.value = ''; 
+            input.value = ''; // Reset
             updateState();
         }
 
         function clearVinheta(index, e) {
-            e.preventDefault(); 
+            e.stopPropagation();
             vinhetaSlots[index] = null;
             updateSlotUI(index, false);
             updateState();
@@ -316,42 +331,75 @@
             document.getElementById('slot-counter').innerText = `${vinhetaSlots.filter(v=>v!==null).length}/4`;
         }
 
-        // --- TRACKS & ZIP (SEM FILTROS) ---
-        document.getElementById('inp-music').addEventListener('change', function() {
-            wakeUp();
-            // Aceita tudo, o decodeAudioData que lute depois
-            const files = Array.from(this.files);
-            if(files.length) { addTracks(files); toast(`${files.length} arquivos`); }
-            this.value='';
-        });
+        // Listeners for Vinheta Inputs
+        document.getElementById('inp-v1').onchange = function(){ loadVinheta(0, this) };
+        document.getElementById('inp-v2').onchange = function(){ loadVinheta(1, this) };
+        document.getElementById('inp-v3').onchange = function(){ loadVinheta(2, this) };
+        document.getElementById('inp-v4').onchange = function(){ loadVinheta(3, this) };
 
-        document.getElementById('inp-zip').addEventListener('change', async function() {
-            const f=this.files[0]; if(!f)return; wakeUp(); toast("Lendo ZIP...");
+        // Load Music
+        document.getElementById('inp-music').onchange = function() {
+            if(this.files.length > 0) {
+                initAudio();
+                const files = Array.from(this.files);
+                files.forEach(f => {
+                    tracks.push({
+                        id: Math.random().toString(36).substr(2, 9),
+                        file: f,
+                        status: 'pending',
+                        msg: 'Aguardando',
+                        blob: null
+                    });
+                });
+                toast(`${files.length} músicas adicionadas`);
+                updateState();
+            }
+            this.value = '';
+        };
+
+        // Load ZIP
+        document.getElementById('inp-zip').onchange = async function() {
+            const file = this.files[0];
+            if (!file) return;
+            initAudio();
+            toast("Processando ZIP...");
+
             try {
-                const z=new JSZip(); const c=await z.loadAsync(f); const fls=[];
-                for(let k of Object.keys(c.files)){
-                    if(!c.files[k].dir && !k.startsWith('__')) {
-                        const b=await c.files[k].async("blob"); 
-                        // Cria blob e tenta passar
-                        fls.push(new File([b],k.split('/').pop(),{type:'audio/mpeg'}));
+                const zip = new JSZip();
+                const content = await zip.loadAsync(file);
+                let count = 0;
+
+                for (const filename of Object.keys(content.files)) {
+                    // Ignora lixo do Mac
+                    if (!content.files[filename].dir && !filename.startsWith('__') && !filename.includes('/.')) {
+                        const blob = await content.files[filename].async("blob");
+                        // Cria File object "clean" sem restrição de tipo
+                        const newFile = new File([blob], filename.split('/').pop());
+                        tracks.push({
+                            id: Math.random().toString(36).substr(2, 9),
+                            file: newFile,
+                            status: 'pending',
+                            msg: 'Do ZIP',
+                            blob: null
+                        });
+                        count++;
                     }
                 }
-                if(fls.length){ addTracks(fls); toast(`${fls.length} extraídos!`); } else toast("ZIP vazio", "err");
-            } catch(e){ toast("ZIP corrompido", "err"); }
-            this.value='';
-        });
+                toast(`${count} arquivos extraídos!`);
+                updateState();
+            } catch (err) {
+                toast("Erro no ZIP", "err");
+            }
+            this.value = '';
+        };
 
-        function addTracks(ls) {
-            ls.forEach(f => tracks.push({ id: Math.random().toString(36).slice(2), file: f, status: 'pending', msg: 'Aguardando', blob: null }));
-            updateState();
-        }
-
-        // --- RENDER ---
+        // UI State
         function updateState() {
             const list = document.getElementById('track-list');
             const empty = document.getElementById('empty-state');
             const activeVinhetas = vinhetaSlots.filter(v=>v!==null).length;
             
+            // Logic Selector
             const logicSel = document.getElementById('sel-pos');
             const logicOpts = `
                 <option value="start">▶️ Início (0:00)</option>
@@ -382,6 +430,7 @@
                 let spin = t.status==='processing'?'spin':'';
                 let col = t.status==='done'?'text-green-500':(t.status==='error'?'text-red-500':'text-zinc-500');
                 let playing = playingId === t.id;
+                
                 return `
                 <div class="p-3 flex items-center justify-between hover:bg-white/5 transition-colors border-b border-white/5">
                     <div class="flex items-center gap-3 min-w-0">
@@ -419,87 +468,109 @@
             if(done && !isWorking) dl.classList.remove('hidden'); else dl.classList.add('hidden');
         }
 
-        // --- SPOT FINDER (SMART) ---
-        function findSpots(raw, sampleRate, count, limitSeconds, minGapSecs, avoidEndSecs) {
-            const avoidEndSamples = avoidEndSecs * sampleRate;
-            const limitSamples = limitSeconds > 0 ? (limitSeconds * sampleRate) : raw.length;
-            const actualLimit = Math.min(limitSamples, raw.length - avoidEndSamples);
-
-            if (actualLimit <= 0) return [0]; 
-
-            const winSize = Math.floor(sampleRate * 0.5); 
-            const profile = [];
-            const step = Math.floor(sampleRate * 0.5);
-            for(let i=0; i < actualLimit - winSize; i += step) {
-                let sum = 0;
-                for(let k=0; k<200; k++) {
-                    const idx = Math.floor(i + (k*(winSize/200)));
-                    if(idx < raw.length) sum += raw[idx]*raw[idx];
+        // --- PROCESSING ENGINE (V10 STYLE - SIMPLE) ---
+        
+        // SFX Gen
+        async function getSFX(type, sr) {
+            if (!audioCtx || type === 'none') return null;
+            if (type === 'airhorn') {
+                const b = audioCtx.createBuffer(2, sr * 1.5, sr);
+                for (let c = 0; c < 2; c++) {
+                    const d = b.getChannelData(c);
+                    for (let i = 0; i < d.length; i++) {
+                        const t = i / sr;
+                        const s = (Math.sin(t * 400 * 6.28) + Math.sin(t * 405 * 6.28)) * 0.5;
+                        d[i] = (s > 0 ? 0.5 : -0.5) * Math.max(0, 1 - t / 1.5) * 0.4;
+                    }
                 }
-                profile.push({ time: i/sampleRate, energy: Math.sqrt(sum/200) });
+                return b;
             }
-
-            profile.sort((a,b) => a.energy - b.energy);
-            const selected = [];
-            const candidates = profile.filter(p => p.time > 2); // Ignora ataque
-
-            for(let cand of candidates) {
-                if(selected.length >= count) break;
-                let far = true;
-                for(let s of selected) {
-                    if(Math.abs(s - cand.time) < minGapSecs) { far = false; break; }
-                }
-                if(far) selected.push(cand.time);
+            if (type === 'laser') {
+                const b=audioCtx.createBuffer(2,sr*0.4,sr);
+                for(let i=0;i<b.length;i++){let t=i/sr;let f=800*Math.exp(-t*15);let v=Math.sin(t*f*6.28)*0.5;b.getChannelData(0)[i]=v;b.getChannelData(1)[i]=v;}
+                return b;
             }
-            return selected.sort((a,b) => a - b);
+            if (type === 'impact') {
+                const b=audioCtx.createBuffer(2,sr*2,sr);
+                for(let i=0;i<b.length;i++){let t=i/sr;let n=(Math.random()*2-1);let s=Math.sin(t*50*6.28);let e=Math.exp(-t*4);let v=(n*0.2+s*0.8)*e;b.getChannelData(0)[i]=v;b.getChannelData(1)[i]=v;}
+                return b;
+            }
+            if (type === 'riser') {
+                const b=audioCtx.createBuffer(2,sr*2,sr);
+                for(let i=0;i<b.length;i++){let t=i/sr;let f=100+(t*1000);let s=Math.sin(t*f*6.28)*(t/2)*0.3;b.getChannelData(0)[i]=s;b.getChannelData(1)[i]=s;}
+                return b;
+            }
+            if (type === 'siren') {
+                const b=audioCtx.createBuffer(2,sr*2,sr);
+                for(let i=0;i<b.length;i++){let t=i/sr;let m=Math.sin(t*10);let f=600+(m*200);let s=(Math.sin(t*f*6.28)>0?0.3:-0.3)*0.3;b.getChannelData(0)[i]=s;b.getChannelData(1)[i]=s;}
+                return b;
+            }
+            return null;
         }
 
-        // --- PROCESSING ---
-        async function startMix() {
-            if(isWorking) return;
-            isWorking = true; updateState(); wakeUp();
+        function findSpots(raw, sr, count, lim, minGap, avoid) {
+            const avoidS = avoid * sr;
+            const limS = lim > 0 ? (lim * sr) : raw.length;
+            const actLim = Math.min(limS, raw.length - avoidS);
+            if (actLim <= 0) return [0];
+            const win = Math.floor(sr * 0.5); 
+            const prof = [];
+            const step = Math.floor(sr * 0.5);
+            for(let i=0; i < actLim - win; i += step) {
+                let sum = 0;
+                for(let k=0; k<200; k++) {
+                    const idx = Math.floor(i + (k*(win/200)));
+                    if(idx < raw.length) sum += raw[idx]*raw[idx];
+                }
+                prof.push({ t: i/sr, e: Math.sqrt(sum/200) });
+            }
+            prof.sort((a,b) => a.e - b.e);
+            const sel = [];
+            const cands = prof.filter(p => p.t > 2);
+            for(let c of cands) {
+                if(sel.length >= count) break;
+                let ok = true;
+                for(let s of sel) if(Math.abs(s - c.t) < minGap) { ok=false; break; }
+                if(ok) sel.push(c.t);
+            }
+            return sel.sort((a,b) => a - b);
+        }
 
-            const activeVinhetas = vinhetaSlots.filter(v => v !== null);
+        async function startMix() {
+            if (isWorking) return;
+            isWorking = true;
+            updateState();
+            initAudio();
+
+            const activeV = vinhetaSlots.filter(v => v !== null);
             const mixMode = document.getElementById('sel-mix').value;
             const sfxType = document.getElementById('sel-sfx').value;
             let logic = document.getElementById('sel-pos').value;
-            
-            if(activeVinhetas.length > 1) logic = 'multi';
+            if(activeV.length > 1) logic = 'multi';
 
-            for(let i=0; i<tracks.length; i++) {
-                if(tracks[i].status !== 'done') {
-                    tracks[i].status = 'processing'; tracks[i].msg = 'Analisando...';
-                    updateState(); await new Promise(r=>setTimeout(r,50));
+            for (let i = 0; i < tracks.length; i++) {
+                if (tracks[i].status !== 'done') {
+                    tracks[i].status = 'processing';
+                    tracks[i].msg = 'Processando...';
+                    updateState();
+                    await new Promise(r => setTimeout(r, 50));
 
                     try {
-                        const f = tracks[i].file;
-                        const ab = await f.arrayBuffer();
-                        const mb = await audioCtx.decodeAudioData(ab); // Decodificação sem filtros
+                        // V10 STYLE DECODE (Direct & Simple)
+                        const ab = await tracks[i].file.arrayBuffer();
+                        const mb = await audioCtx.decodeAudioData(ab);
 
-                        let spots = [];
-                        if (logic === 'start') {
-                            spots = [0];
-                        } else if (logic === 'intro') {
-                            spots = [15];
-                        } else if (logic.startsWith('smart') || logic === 'multi') {
-                            let limit = 0; 
-                            if (logic === 'smart30') limit = 30;
-                            if (logic === 'smart60') limit = 60;
-                            spots = findSpots(mb.getChannelData(0), mb.sampleRate, activeVinhetas.length, limit, 15, 15);
-                            if (spots.length === 0) spots = [0];
+                        let spots = [0];
+                        if (logic === 'intro') spots = [15];
+                        else if (logic.startsWith('smart') || logic === 'multi') {
+                            let l = logic==='smart30'?30:(logic==='smart60'?60:0);
+                            spots = findSpots(mb.getChannelData(0), mb.sampleRate, activeV.length, l, 15, 15);
+                            if(!spots.length) spots=[0];
                         }
 
                         // SFX
-                        let sfxBuf = null; const sr = mb.sampleRate;
-                        if(sfxType!=='none'){
-                            if(sfxType==='airhorn'){sfxBuf=audioCtx.createBuffer(2,sr*1.5,sr);for(let c=0;c<2;c++){let d=sfxBuf.getChannelData(c);for(let k=0;k<d.length;k++){let t=k/sr;d[k]=(Math.sin(t*400*6.28)>0?0.5:-0.5)*Math.max(0,1-t/1.5)*0.4;}}}
-                            else if(sfxType==='laser'){sfxBuf=audioCtx.createBuffer(2,sr*0.4,sr);for(let k=0;k<sfxBuf.length;k++){let t=k/sr;let f=800*Math.exp(-t*15);let v=Math.sin(t*f*6.28)*0.5;sfxBuf.getChannelData(0)[k]=v;sfxBuf.getChannelData(1)[k]=v;}}
-                            else if(sfxType==='impact'){sfxBuf=audioCtx.createBuffer(2,sr*2,sr);for(let k=0;k<sfxBuf.length;k++){let t=k/sr;let n=(Math.random()*2-1);let s=Math.sin(t*50*6.28);let e=Math.exp(-t*4);let v=(n*0.2+s*0.8)*e;sfxBuf.getChannelData(0)[k]=v;sfxBuf.getChannelData(1)[k]=v;}}
-                            else if(sfxType==='riser'){sfxBuf=audioCtx.createBuffer(2,sr*2,sr);for(let k=0;k<sfxBuf.length;k++){let t=k/sr;let f=100+(t*1000);let s=Math.sin(t*f*6.28)*(t/2)*0.3;sfxBuf.getChannelData(0)[k]=s;sfxBuf.getChannelData(1)[k]=s;}}
-                            else if(sfxType==='siren'){sfxBuf=audioCtx.createBuffer(2,sr*2,sr);for(let k=0;k<sfxBuf.length;k++){let t=k/sr;let m=Math.sin(t*10);let f=600+(m*200);let s=(Math.sin(t*f*6.28)>0?0.3:-0.3)*0.3;sfxBuf.getChannelData(0)[k]=s;sfxBuf.getChannelData(1)[k]=s;}}
-                            else if(sfxType==='underwater'){sfxBuf=audioCtx.createBuffer(2,sr*3,sr);for(let k=0;k<sfxBuf.length;k++){let t=k/sr;let n=Math.random()*2-1;let lfo=Math.sin(t*3);let v=n*(0.1+lfo*0.05)*Math.exp(-t);sfxBuf.getChannelData(0)[k]=v;sfxBuf.getChannelData(1)[k]=v;}}
-                        }
-                        const sfxDur = sfxBuf ? sfxBuf.duration : 0;
+                        let sBuf = await getSFX(sfxType, mb.sampleRate);
+                        const sDur = sBuf ? sBuf.duration : 0;
 
                         const off = new OfflineAudioContext(2, mb.length, mb.sampleRate);
                         const ms = off.createBufferSource(); ms.buffer = mb;
@@ -507,9 +578,9 @@
                         
                         mg.gain.setValueAtTime(1, 0);
                         spots.forEach((st, idx) => {
-                            if (idx >= activeVinhetas.length) return;
-                            const vDur = activeVinhetas[idx].duration;
-                            const tDur = vDur + (sfxDur * 0.5);
+                            if (idx >= activeV.length) return;
+                            const vDur = activeV[idx].duration;
+                            const tDur = vDur + (sDur * 0.5);
                             const et = st + tDur;
 
                             if (mixMode === 'ducking') {
@@ -520,39 +591,39 @@
                                 mg.gain.setValueAtTime(0, et-0.05); mg.gain.linearRampToValueAtTime(1, et);
                             }
                         });
-                        
                         ms.connect(mg); mg.connect(off.destination); ms.start(0);
 
                         spots.forEach((st, idx) => {
-                            if (idx >= activeVinhetas.length) return;
-                            
-                            if(sfxBuf) {
-                                const ss = off.createBufferSource(); ss.buffer = sfxBuf;
+                            if (idx >= activeV.length) return;
+                            if(sBuf) {
+                                const ss = off.createBufferSource(); ss.buffer = sBuf;
                                 const sg = off.createGain(); sg.gain.value=0.8;
                                 ss.connect(sg); sg.connect(off.destination); ss.start(st);
                             }
-                            
-                            const vs = off.createBufferSource(); vs.buffer = activeVinhetas[idx].buffer;
+                            const vs = off.createBufferSource(); vs.buffer = activeV[idx].buffer;
                             const vg = off.createGain(); vg.gain.value = mixMode==='overlay'?1.3:1.1;
                             vs.connect(vg); vg.connect(off.destination);
-                            vs.start(st + (sfxBuf ? 0.5 : 0));
+                            vs.start(st + (sBuf ? 0.5 : 0));
                         });
 
-                        const rendered = await off.startRendering();
-                        tracks[i].blob = bufferToWave(rendered);
+                        const ren = await off.startRendering();
+                        tracks[i].blob = bufferToWave(ren);
                         tracks[i].status = 'done';
-                        tracks[i].msg = logic==='start' ? 'Início' : `Smart (${st.toFixed(0)}s)`;
+                        tracks[i].msg = 'Sucesso';
 
-                    } catch(e) {
+                    } catch (e) {
                         console.error(e);
-                        tracks[i].status = 'error'; 
-                        tracks[i].msg = 'Erro de Processamento'; // Mensagem genérica
+                        tracks[i].status = 'error';
+                        tracks[i].msg = 'Erro';
                     }
                 }
             }
-            isWorking = false; updateState(); toast("CD Finalizado!");
+            isWorking = false;
+            updateState();
+            toast("Concluído!");
         }
 
+        // WAV Encoder (V10)
         function bufferToWave(abuffer) {
             let numOfChan = abuffer.numberOfChannels, length = abuffer.length * numOfChan * 2 + 44, buffer = new ArrayBuffer(length), view = new DataView(buffer), channels = [], i, sample, offset = 0, pos = 0;
             function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
