@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SuitCds V17 Universal</title>
+    <title>SuitCds V18 Final</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,44 +15,40 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
-        body { background-color: #050505; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #000; -webkit-tap-highlight-color: transparent; }
         
         .glass { 
-            background: rgba(30, 30, 35, 0.85); 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px); 
+            background: rgba(22, 22, 24, 0.9); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
             border: 1px solid rgba(255,255,255,0.1); 
         }
 
         .safe-footer { padding-bottom: calc(env(safe-area-inset-bottom) + 20px); }
         
+        /* Slot Design */
         .v-slot { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); }
-        .v-slot.active { background: rgba(79, 70, 229, 0.15); border-color: rgba(99, 102, 241, 0.6); }
+        .v-slot.active { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.5); }
         
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* INPUT OCULTO MAS ACESSÍVEL */
         .hidden-input { display: none; }
 
         .toast { transform: translateY(150%) translateX(-50%); bottom: 100px; left: 50%; opacity: 0; transition: all 0.3s ease; }
         .toast.show { transform: translateY(0) translateX(-50%); opacity: 1; }
     </style>
 </head>
-<body class="min-h-screen text-white font-sans pb-48 selection:bg-indigo-500/40">
+<body class="min-h-screen text-white font-sans pb-48 selection:bg-green-500/40">
 
     <audio id="preview-audio" playsinline webkit-playsinline></audio>
 
-    <!-- INPUTS SEM FILTRO 'ACCEPT' PARA MOSTRAR TODOS OS ARQUIVOS -->
+    <!-- INPUTS (Sem restrições) -->
     <input type="file" id="inp-v1" class="hidden-input">
     <input type="file" id="inp-v2" class="hidden-input">
     <input type="file" id="inp-v3" class="hidden-input">
     <input type="file" id="inp-v4" class="hidden-input">
-    
-    <!-- INPUT MÚLTIPLO SEM FILTRO -->
     <input type="file" id="inp-music" class="hidden-input" multiple>
-    
-    <!-- INPUT ZIP -->
     <input type="file" id="inp-zip" class="hidden-input">
 
     <div id="toast" class="fixed z-[70] w-max max-w-[90%] px-6 py-4 rounded-full glass flex items-center gap-3 shadow-2xl toast pointer-events-none border-t border-white/20">
@@ -65,16 +61,16 @@
         <div class="max-w-2xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-green-600 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/20">
-                    <i data-lucide="folder-open" class="w-6 h-6 text-white"></i>
+                    <i data-lucide="check-circle-2" class="w-6 h-6 text-white"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-white tracking-tight">SuitCds</h1>
-                    <p class="text-[10px] text-zinc-400 font-bold tracking-widest uppercase">V17 Universal</p>
+                    <p class="text-[10px] text-zinc-400 font-bold tracking-widest uppercase">V18 Final Stable</p>
                 </div>
             </div>
             <div class="px-3 py-1 bg-zinc-900 rounded-full border border-zinc-800 text-[10px] font-mono text-zinc-500 flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                UNLOCKED
+                READY
             </div>
         </div>
     </header>
@@ -85,13 +81,12 @@
         <section>
             <div class="flex items-center justify-between mb-3 px-1">
                 <h2 class="text-xs font-bold text-zinc-500 uppercase flex items-center gap-2">
-                    <i data-lucide="mic-2" class="w-3 h-3 text-indigo-400"></i> 1. Vinhetas (Máx 4)
+                    <i data-lucide="mic-2" class="w-3 h-3 text-green-400"></i> 1. Vinhetas (Máx 4)
                 </h2>
                 <span id="slot-counter" class="text-[10px] text-zinc-600 font-mono">0/4</span>
             </div>
             
             <div class="grid grid-cols-2 gap-2">
-                <!-- SLOT 1 -->
                 <div onclick="document.getElementById('inp-v1').click()" class="v-slot rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]" id="slot-1">
                     <div id="icon-1" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 border border-white/5">
                         <span class="font-bold text-xs">1</span>
@@ -99,8 +94,6 @@
                     <span id="name-1" class="text-[10px] font-medium text-zinc-400 text-center truncate w-full px-2">Adicionar</span>
                     <button onclick="clearVinheta(0, event)" id="btn-clr-1" class="hidden absolute top-0 right-0 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-4 h-4"></i></button>
                 </div>
-
-                <!-- SLOT 2 -->
                 <div onclick="document.getElementById('inp-v2').click()" class="v-slot rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]" id="slot-2">
                     <div id="icon-2" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 border border-white/5">
                         <span class="font-bold text-xs">2</span>
@@ -108,8 +101,6 @@
                     <span id="name-2" class="text-[10px] font-medium text-zinc-400 text-center truncate w-full px-2">Adicionar</span>
                     <button onclick="clearVinheta(1, event)" id="btn-clr-2" class="hidden absolute top-0 right-0 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-4 h-4"></i></button>
                 </div>
-
-                <!-- SLOT 3 -->
                 <div onclick="document.getElementById('inp-v3').click()" class="v-slot rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]" id="slot-3">
                     <div id="icon-3" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 border border-white/5">
                         <span class="font-bold text-xs">3</span>
@@ -117,8 +108,6 @@
                     <span id="name-3" class="text-[10px] font-medium text-zinc-400 text-center truncate w-full px-2">Adicionar</span>
                     <button onclick="clearVinheta(2, event)" id="btn-clr-3" class="hidden absolute top-0 right-0 p-2 text-zinc-500 hover:text-red-400"><i data-lucide="x" class="w-4 h-4"></i></button>
                 </div>
-
-                <!-- SLOT 4 -->
                 <div onclick="document.getElementById('inp-v4').click()" class="v-slot rounded-xl p-3 flex flex-col items-center justify-center gap-2 h-24 cursor-pointer relative overflow-hidden active:scale-[0.98]" id="slot-4">
                     <div id="icon-4" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 border border-white/5">
                         <span class="font-bold text-xs">4</span>
@@ -132,19 +121,18 @@
         <!-- 2. STUDIO -->
         <section>
             <h2 class="text-xs font-bold text-zinc-500 uppercase mb-3 flex items-center gap-2 pl-1">
-                <i data-lucide="sliders" class="w-3 h-3 text-indigo-400"></i> 2. Lógica
+                <i data-lucide="sliders" class="w-3 h-3 text-green-400"></i> 2. Lógica Anti-Drop
             </h2>
             
             <div class="grid grid-cols-2 gap-3 mb-3">
                 <div class="glass p-3 rounded-2xl">
                     <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1.5 ml-1">Posição</label>
                     <div class="relative">
-                        <select id="sel-pos" class="w-full bg-zinc-900 text-white text-xs py-3 px-3 rounded-xl border border-zinc-700 focus:border-indigo-500 outline-none appearance-none font-bold cursor-pointer">
-                            <option value="smart30" selected>🧠 Smart (30s)</option>
+                        <select id="sel-pos" class="w-full bg-zinc-900 text-white text-xs py-3 px-3 rounded-xl border border-zinc-700 focus:border-green-500 outline-none appearance-none font-bold cursor-pointer">
+                            <option value="smartSafe" selected>🛡️ Safe (Evita Drops)</option>
                             <option value="start">▶️ Início (0:00)</option>
                             <option value="intro">⏳ Pós-Intro (15s)</option>
-                            <option value="smart60">🧠 Smart (1 min)</option>
-                            <option value="smartFull">🔍 Smart (Full)</option>
+                            <option value="smart30">🧠 Smart (30s)</option>
                             <option value="multi" disabled>✨ Multi (Auto)</option>
                         </select>
                         <i data-lucide="chevron-down" class="absolute right-3 top-3.5 w-3 h-3 text-zinc-500 pointer-events-none"></i>
@@ -154,7 +142,7 @@
                 <div class="glass p-3 rounded-2xl">
                     <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1.5 ml-1">Estilo</label>
                     <div class="relative">
-                        <select id="sel-mix" class="w-full bg-zinc-900 text-white text-xs py-3 px-3 rounded-xl border border-zinc-700 focus:border-indigo-500 outline-none appearance-none font-bold cursor-pointer">
+                        <select id="sel-mix" class="w-full bg-zinc-900 text-white text-xs py-3 px-3 rounded-xl border border-zinc-700 focus:border-green-500 outline-none appearance-none font-bold cursor-pointer">
                             <option value="ducking">📻 Rádio (Suave)</option>
                             <option value="cut">✂️ Seco (Corte)</option>
                             <option value="overlay">🔥 Rave (Por Cima)</option>
@@ -165,7 +153,7 @@
             </div>
 
             <div class="glass p-3 rounded-2xl flex items-center gap-3 relative">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center shrink-0 shadow-lg shadow-green-500/20">
                     <i data-lucide="zap" class="w-5 h-5 text-white fill-current"></i>
                 </div>
                 <div class="flex-1 relative">
@@ -186,12 +174,12 @@
         <!-- 3. MÚSICAS -->
         <section>
             <h2 class="text-xs font-bold text-zinc-500 uppercase mb-3 flex items-center gap-2 pl-1">
-                <i data-lucide="music" class="w-3 h-3 text-indigo-400"></i> 3. Playlist
+                <i data-lucide="music" class="w-3 h-3 text-green-400"></i> 3. Playlist
             </h2>
 
             <div class="flex gap-3 mb-4">
-                <div onclick="document.getElementById('inp-music').click()" class="flex-1 glass p-4 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-white/5 border-dashed border-2 border-zinc-800 hover:border-indigo-500/30">
-                    <i data-lucide="file-plus" class="w-6 h-6 text-indigo-400"></i>
+                <div onclick="document.getElementById('inp-music').click()" class="flex-1 glass p-4 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-white/5 border-dashed border-2 border-zinc-800 hover:border-green-500/30">
+                    <i data-lucide="file-plus" class="w-6 h-6 text-green-400"></i>
                     <span class="text-[10px] font-bold text-zinc-300">ADD MÚSICAS</span>
                 </div>
 
@@ -201,11 +189,10 @@
                 </div>
             </div>
 
-            <!-- LISTA -->
             <div id="list-wrapper" class="glass rounded-2xl overflow-hidden min-h-[160px] relative transition-all pb-4">
                 <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-zinc-600 space-y-3 pointer-events-none">
                     <div class="w-16 h-16 rounded-full bg-zinc-900/50 flex items-center justify-center">
-                        <i data-lucide="layers" class="w-8 h-8 opacity-40"></i>
+                        <i data-lucide="folder-open" class="w-8 h-8 opacity-40"></i>
                     </div>
                     <p class="text-xs font-medium opacity-50">Sua lista está vazia</p>
                 </div>
@@ -229,25 +216,20 @@
     </footer>
 
     <script>
-        // --- MOTOR V10 RESTAURADO (COM SUPORTE MULTI) ---
+        // --- ESTADO ---
         let audioCtx = null;
         let vinhetaSlots = [null, null, null, null];
         let tracks = []; 
         let isWorking = false;
         let playingId = null;
-        let savedSingleMode = 'smart30'; // Memória para o seletor
+        let savedSingleMode = 'smartSafe';
 
         // INIT
         lucide.createIcons();
         
-        // Destrava Áudio
         function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
         }
         window.addEventListener('click', initAudio, { once: true });
         window.addEventListener('touchstart', initAudio, { once: true });
@@ -267,35 +249,30 @@
         }
 
         // --- HANDLERS ---
-        
-        // Lógica de Memória do Seletor
         document.getElementById('sel-pos').addEventListener('change', function() {
-            if(this.value !== 'multi') {
-                savedSingleMode = this.value;
-            }
+            if(this.value !== 'multi') savedSingleMode = this.value;
         });
 
         // Load Vinheta
         async function loadVinheta(index, input) {
             const file = input.files[0];
             if (!file) return;
-            initAudio(); // Force init
+            initAudio(); 
 
             const nameEl = document.getElementById(`name-${index+1}`);
             nameEl.innerText = "Lendo...";
 
             try {
                 const ab = await file.arrayBuffer();
-                const buf = await audioCtx.decodeAudioData(ab); // Direct Decode (V10 style)
+                const buf = await audioCtx.decodeAudioData(ab);
                 vinhetaSlots[index] = { buffer: buf, duration: buf.duration, name: file.name };
                 updateSlotUI(index, true);
                 toast(`Vinheta ${index+1} OK!`);
             } catch (err) {
-                console.error(err);
                 nameEl.innerText = "Erro";
                 toast("Erro ao ler arquivo", "err");
             }
-            input.value = ''; // Reset
+            input.value = ''; 
             updateState();
         }
 
@@ -314,7 +291,7 @@
 
             if(active) {
                 slot.classList.add('active');
-                icon.className = "w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30";
+                icon.className = "w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg shadow-green-500/30";
                 icon.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
                 name.innerText = vinhetaSlots[index].name;
                 name.classList.add('text-white');
@@ -331,13 +308,13 @@
             document.getElementById('slot-counter').innerText = `${vinhetaSlots.filter(v=>v!==null).length}/4`;
         }
 
-        // Listeners for Vinheta Inputs
+        // Listeners Vinheta
         document.getElementById('inp-v1').onchange = function(){ loadVinheta(0, this) };
         document.getElementById('inp-v2').onchange = function(){ loadVinheta(1, this) };
         document.getElementById('inp-v3').onchange = function(){ loadVinheta(2, this) };
         document.getElementById('inp-v4').onchange = function(){ loadVinheta(3, this) };
 
-        // Load Music
+        // Music Load
         document.getElementById('inp-music').onchange = function() {
             if(this.files.length > 0) {
                 initAudio();
@@ -357,7 +334,7 @@
             this.value = '';
         };
 
-        // Load ZIP
+        // ZIP Load (Robusto)
         document.getElementById('inp-zip').onchange = async function() {
             const file = this.files[0];
             if (!file) return;
@@ -370,10 +347,8 @@
                 let count = 0;
 
                 for (const filename of Object.keys(content.files)) {
-                    // Ignora lixo do Mac
                     if (!content.files[filename].dir && !filename.startsWith('__') && !filename.includes('/.')) {
                         const blob = await content.files[filename].async("blob");
-                        // Cria File object "clean" sem restrição de tipo
                         const newFile = new File([blob], filename.split('/').pop());
                         tracks.push({
                             id: Math.random().toString(36).substr(2, 9),
@@ -393,20 +368,18 @@
             this.value = '';
         };
 
-        // UI State
+        // UI Update
         function updateState() {
             const list = document.getElementById('track-list');
             const empty = document.getElementById('empty-state');
             const activeVinhetas = vinhetaSlots.filter(v=>v!==null).length;
             
-            // Logic Selector
             const logicSel = document.getElementById('sel-pos');
             const logicOpts = `
+                <option value="smartSafe">🛡️ Safe (Evita Drops)</option>
                 <option value="start">▶️ Início (0:00)</option>
                 <option value="intro">⏳ Pós-Intro (15s)</option>
                 <option value="smart30">🧠 Smart (Nos 30s)</option>
-                <option value="smart60">🧠 Smart (No 1 min)</option>
-                <option value="smartFull">🔍 Smart (Música Toda)</option>
             `;
 
             if(activeVinhetas > 1) {
@@ -468,8 +441,50 @@
             if(done && !isWorking) dl.classList.remove('hidden'); else dl.classList.add('hidden');
         }
 
-        // --- PROCESSING ENGINE (V10 STYLE - SIMPLE) ---
-        
+        // --- SAFE ZONE ALGORITHM (EVITA DROPS) ---
+        function findSafeSpot(raw, sampleRate, count, limitSeconds, minGapSecs, avoidEndSecs) {
+            const avoidEndSamples = avoidEndSecs * sampleRate;
+            const limitSamples = limitSeconds > 0 ? (limitSeconds * sampleRate) : raw.length;
+            const actLim = Math.min(limitSamples, raw.length - avoidEndSamples);
+
+            if (actLim <= 0) return [0];
+
+            // Janela maior (5s) para garantir que é uma parte calma de verdade
+            const winSize = Math.floor(sampleRate * 5); 
+            const step = Math.floor(sampleRate * 2);
+            
+            const profile = [];
+            
+            // 1. Scan Energy
+            for(let i=0; i < actLim - winSize; i += step) {
+                let sum = 0;
+                // Amostragem
+                for(let k=0; k<500; k++) {
+                    const idx = Math.floor(i + (k*(winSize/500)));
+                    if(idx < raw.length) sum += Math.abs(raw[idx]);
+                }
+                const avgVol = sum / 500;
+                profile.push({ time: i/sampleRate, vol: avgVol });
+            }
+
+            // 2. Ordena por volume mais baixo
+            profile.sort((a,b) => a.vol - b.vol);
+            
+            const selected = [];
+            const candidates = profile.filter(p => p.time > 5); // Pula intro muito inicial
+
+            for(let cand of candidates) {
+                if(selected.length >= count) break;
+                let far = true;
+                for(let s of selected) {
+                    if(Math.abs(s - cand.time) < minGapSecs) { far = false; break; }
+                }
+                if(far) selected.push(cand.time);
+            }
+            return selected.sort((a,b) => a - b);
+        }
+
+        // --- PROCESSING ---
         // SFX Gen
         async function getSFX(type, sr) {
             if (!audioCtx || type === 'none') return null;
@@ -485,55 +500,7 @@
                 }
                 return b;
             }
-            if (type === 'laser') {
-                const b=audioCtx.createBuffer(2,sr*0.4,sr);
-                for(let i=0;i<b.length;i++){let t=i/sr;let f=800*Math.exp(-t*15);let v=Math.sin(t*f*6.28)*0.5;b.getChannelData(0)[i]=v;b.getChannelData(1)[i]=v;}
-                return b;
-            }
-            if (type === 'impact') {
-                const b=audioCtx.createBuffer(2,sr*2,sr);
-                for(let i=0;i<b.length;i++){let t=i/sr;let n=(Math.random()*2-1);let s=Math.sin(t*50*6.28);let e=Math.exp(-t*4);let v=(n*0.2+s*0.8)*e;b.getChannelData(0)[i]=v;b.getChannelData(1)[i]=v;}
-                return b;
-            }
-            if (type === 'riser') {
-                const b=audioCtx.createBuffer(2,sr*2,sr);
-                for(let i=0;i<b.length;i++){let t=i/sr;let f=100+(t*1000);let s=Math.sin(t*f*6.28)*(t/2)*0.3;b.getChannelData(0)[i]=s;b.getChannelData(1)[i]=s;}
-                return b;
-            }
-            if (type === 'siren') {
-                const b=audioCtx.createBuffer(2,sr*2,sr);
-                for(let i=0;i<b.length;i++){let t=i/sr;let m=Math.sin(t*10);let f=600+(m*200);let s=(Math.sin(t*f*6.28)>0?0.3:-0.3)*0.3;b.getChannelData(0)[i]=s;b.getChannelData(1)[i]=s;}
-                return b;
-            }
             return null;
-        }
-
-        function findSpots(raw, sr, count, lim, minGap, avoid) {
-            const avoidS = avoid * sr;
-            const limS = lim > 0 ? (lim * sr) : raw.length;
-            const actLim = Math.min(limS, raw.length - avoidS);
-            if (actLim <= 0) return [0];
-            const win = Math.floor(sr * 0.5); 
-            const prof = [];
-            const step = Math.floor(sr * 0.5);
-            for(let i=0; i < actLim - win; i += step) {
-                let sum = 0;
-                for(let k=0; k<200; k++) {
-                    const idx = Math.floor(i + (k*(win/200)));
-                    if(idx < raw.length) sum += raw[idx]*raw[idx];
-                }
-                prof.push({ t: i/sr, e: Math.sqrt(sum/200) });
-            }
-            prof.sort((a,b) => a.e - b.e);
-            const sel = [];
-            const cands = prof.filter(p => p.t > 2);
-            for(let c of cands) {
-                if(sel.length >= count) break;
-                let ok = true;
-                for(let s of sel) if(Math.abs(s - c.t) < minGap) { ok=false; break; }
-                if(ok) sel.push(c.t);
-            }
-            return sel.sort((a,b) => a - b);
         }
 
         async function startMix() {
@@ -556,19 +523,21 @@
                     await new Promise(r => setTimeout(r, 50));
 
                     try {
-                        // V10 STYLE DECODE (Direct & Simple)
                         const ab = await tracks[i].file.arrayBuffer();
                         const mb = await audioCtx.decodeAudioData(ab);
 
                         let spots = [0];
                         if (logic === 'intro') spots = [15];
+                        else if (logic === 'start') spots = [0];
                         else if (logic.startsWith('smart') || logic === 'multi') {
-                            let l = logic==='smart30'?30:(logic==='smart60'?60:0);
-                            spots = findSpots(mb.getChannelData(0), mb.sampleRate, activeV.length, l, 15, 15);
+                            let limit = 0;
+                            if (logic === 'smart30') limit = 30;
+                            // Se for smartSafe, limit=0 (full song) mas com algoritmo de 5s window
+                            // min gap 20s
+                            spots = findSafeSpot(mb.getChannelData(0), mb.sampleRate, activeV.length, limit, 20, 15);
                             if(!spots.length) spots=[0];
                         }
 
-                        // SFX
                         let sBuf = await getSFX(sfxType, mb.sampleRate);
                         const sDur = sBuf ? sBuf.duration : 0;
 
@@ -623,7 +592,6 @@
             toast("Concluído!");
         }
 
-        // WAV Encoder (V10)
         function bufferToWave(abuffer) {
             let numOfChan = abuffer.numberOfChannels, length = abuffer.length * numOfChan * 2 + 44, buffer = new ArrayBuffer(length), view = new DataView(buffer), channels = [], i, sample, offset = 0, pos = 0;
             function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
@@ -639,7 +607,36 @@
         window.playT = (id) => { const t = tracks.find(x => x.id === id); if(playingId===id) { document.getElementById('preview-audio').pause(); playingId=null; } else { document.getElementById('preview-audio').src=URL.createObjectURL(t.blob); document.getElementById('preview-audio').play(); playingId=id; } updateState(); }
         window.delT = (id) => { tracks = tracks.filter(t => t.id !== id); updateState(); }
         document.getElementById('preview-audio').onended = () => { playingId=null; updateState(); };
-        window.downloadZip = async () => { const z = new JSZip(); let c=0; tracks.forEach(t=>{ if(t.status==='done'&&t.blob) { z.file(`${t.file.name.replace(/\.[^/.]+$/, "")}_Mix.wav`, t.blob); c++; } }); if(c>0) { toast("Gerando ZIP..."); const b=await z.generateAsync({type:"blob"}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download="SuitCds_Mix.zip"; document.body.appendChild(a); a.click(); document.body.removeChild(a); } };
+        
+        // ZIP FIX (Ensure Blob is Ready)
+        window.downloadZip = async () => { 
+            const z = new JSZip(); 
+            let c = 0; 
+            tracks.forEach((t, idx) => { 
+                if (t.status === 'done' && t.blob) { 
+                    // Garante nome único para evitar sobrescrita
+                    let safeName = t.file.name.replace(/[^a-z0-9]/gi, '_').replace(/\.[^/.]+$/, "");
+                    z.file(`${idx+1}_${safeName}_Mix.wav`, t.blob); 
+                    c++; 
+                } 
+            }); 
+            if (c > 0) { 
+                toast("Gerando ZIP..."); 
+                try {
+                    const b = await z.generateAsync({type:"blob"}); 
+                    const a = document.createElement('a'); 
+                    a.href = URL.createObjectURL(b); 
+                    a.download = "SuitCds_Master_Mix.zip"; 
+                    document.body.appendChild(a); 
+                    a.click(); 
+                    document.body.removeChild(a);
+                } catch(e) {
+                    toast("Erro ao gerar ZIP", "err");
+                }
+            } else {
+                toast("Nenhum arquivo pronto", "err");
+            }
+        };
     </script>
 </body>
 </html>
