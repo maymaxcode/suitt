@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SuitCds V18 Final</title>
+    <title>SuitCds V19 Heavy Duty</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,7 +18,7 @@
         body { background-color: #000; -webkit-tap-highlight-color: transparent; }
         
         .glass { 
-            background: rgba(22, 22, 24, 0.9); 
+            background: rgba(18, 18, 20, 0.95); 
             backdrop-filter: blur(20px); 
             -webkit-backdrop-filter: blur(20px); 
             border: 1px solid rgba(255,255,255,0.1); 
@@ -28,7 +28,7 @@
         
         /* Slot Design */
         .v-slot { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); }
-        .v-slot.active { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.5); }
+        .v-slot.active { background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.5); }
         
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -39,11 +39,11 @@
         .toast.show { transform: translateY(0) translateX(-50%); opacity: 1; }
     </style>
 </head>
-<body class="min-h-screen text-white font-sans pb-48 selection:bg-green-500/40">
+<body class="min-h-screen text-white font-sans pb-48 selection:bg-yellow-500/40">
 
     <audio id="preview-audio" playsinline webkit-playsinline></audio>
 
-    <!-- INPUTS (Sem restrições) -->
+    <!-- INPUTS -->
     <input type="file" id="inp-v1" class="hidden-input">
     <input type="file" id="inp-v2" class="hidden-input">
     <input type="file" id="inp-v3" class="hidden-input">
@@ -60,17 +60,17 @@
     <header class="py-5 px-5 border-b border-white/10 bg-black/90 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-2xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-green-600 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/20">
-                    <i data-lucide="check-circle-2" class="w-6 h-6 text-white"></i>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-yellow-600 to-orange-600 flex items-center justify-center shadow-lg shadow-yellow-500/20">
+                    <i data-lucide="hard-drive" class="w-6 h-6 text-white"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-white tracking-tight">SuitCds</h1>
-                    <p class="text-[10px] text-zinc-400 font-bold tracking-widest uppercase">V18 Final Stable</p>
+                    <p class="text-[10px] text-zinc-400 font-bold tracking-widest uppercase">V19 Heavy Duty</p>
                 </div>
             </div>
             <div class="px-3 py-1 bg-zinc-900 rounded-full border border-zinc-800 text-[10px] font-mono text-zinc-500 flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                READY
+                V19
             </div>
         </div>
     </header>
@@ -81,7 +81,7 @@
         <section>
             <div class="flex items-center justify-between mb-3 px-1">
                 <h2 class="text-xs font-bold text-zinc-500 uppercase flex items-center gap-2">
-                    <i data-lucide="mic-2" class="w-3 h-3 text-green-400"></i> 1. Vinhetas (Máx 4)
+                    <i data-lucide="mic-2" class="w-3 h-3 text-yellow-500"></i> 1. Vinhetas (Máx 4)
                 </h2>
                 <span id="slot-counter" class="text-[10px] text-zinc-600 font-mono">0/4</span>
             </div>
@@ -121,14 +121,14 @@
         <!-- 2. STUDIO -->
         <section>
             <h2 class="text-xs font-bold text-zinc-500 uppercase mb-3 flex items-center gap-2 pl-1">
-                <i data-lucide="sliders" class="w-3 h-3 text-green-400"></i> 2. Lógica Anti-Drop
+                <i data-lucide="sliders" class="w-3 h-3 text-yellow-500"></i> 2. Lógica Anti-Drop
             </h2>
             
             <div class="grid grid-cols-2 gap-3 mb-3">
                 <div class="glass p-3 rounded-2xl">
                     <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1.5 ml-1">Posição</label>
                     <div class="relative">
-                        <select id="sel-pos" class="w-full bg-zinc-900 text-white text-xs py-3 px-3 rounded-xl border border-zinc-700 focus:border-green-500 outline-none appearance-none font-bold cursor-pointer">
+                        <select id="sel-pos" class="w-full bg-zinc-900 text-white text-xs py-3 px-3 rounded-xl border border-zinc-700 focus:border-yellow-500 outline-none appearance-none font-bold cursor-pointer">
                             <option value="smartSafe" selected>🛡️ Safe (Evita Drops)</option>
                             <option value="start">▶️ Início (0:00)</option>
                             <option value="intro">⏳ Pós-Intro (15s)</option>
@@ -142,7 +142,7 @@
                 <div class="glass p-3 rounded-2xl">
                     <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1.5 ml-1">Estilo</label>
                     <div class="relative">
-                        <select id="sel-mix" class="w-full bg-zinc-900 text-white text-xs py-3 px-3 rounded-xl border border-zinc-700 focus:border-green-500 outline-none appearance-none font-bold cursor-pointer">
+                        <select id="sel-mix" class="w-full bg-zinc-900 text-white text-xs py-3 px-3 rounded-xl border border-zinc-700 focus:border-yellow-500 outline-none appearance-none font-bold cursor-pointer">
                             <option value="ducking">📻 Rádio (Suave)</option>
                             <option value="cut">✂️ Seco (Corte)</option>
                             <option value="overlay">🔥 Rave (Por Cima)</option>
@@ -153,7 +153,7 @@
             </div>
 
             <div class="glass p-3 rounded-2xl flex items-center gap-3 relative">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center shrink-0 shadow-lg shadow-green-500/20">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-600 to-orange-600 flex items-center justify-center shrink-0 shadow-lg shadow-yellow-500/20">
                     <i data-lucide="zap" class="w-5 h-5 text-white fill-current"></i>
                 </div>
                 <div class="flex-1 relative">
@@ -174,17 +174,17 @@
         <!-- 3. MÚSICAS -->
         <section>
             <h2 class="text-xs font-bold text-zinc-500 uppercase mb-3 flex items-center gap-2 pl-1">
-                <i data-lucide="music" class="w-3 h-3 text-green-400"></i> 3. Playlist
+                <i data-lucide="music" class="w-3 h-3 text-yellow-500"></i> 3. Playlist
             </h2>
 
             <div class="flex gap-3 mb-4">
-                <div onclick="document.getElementById('inp-music').click()" class="flex-1 glass p-4 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-white/5 border-dashed border-2 border-zinc-800 hover:border-green-500/30">
-                    <i data-lucide="file-plus" class="w-6 h-6 text-green-400"></i>
+                <div onclick="document.getElementById('inp-music').click()" class="flex-1 glass p-4 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-white/5 border-dashed border-2 border-zinc-800 hover:border-yellow-500/30">
+                    <i data-lucide="file-plus" class="w-6 h-6 text-yellow-500"></i>
                     <span class="text-[10px] font-bold text-zinc-300">ADD MÚSICAS</span>
                 </div>
 
-                <div onclick="document.getElementById('inp-zip').click()" class="flex-1 glass p-4 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-white/5 border-dashed border-2 border-zinc-800 hover:border-yellow-500/30">
-                    <i data-lucide="archive" class="w-6 h-6 text-yellow-400"></i>
+                <div onclick="document.getElementById('inp-zip').click()" class="flex-1 glass p-4 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-white/5 border-dashed border-2 border-zinc-800 hover:border-orange-500/30">
+                    <i data-lucide="archive" class="w-6 h-6 text-orange-500"></i>
                     <span class="text-[10px] font-bold text-zinc-300">ADD ZIP</span>
                 </div>
             </div>
@@ -210,7 +210,7 @@
             </button>
             <button id="btn-download" onclick="downloadZip()" class="hidden w-[45%] bg-green-600 hover:bg-green-500 text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-green-900/30">
                 <i data-lucide="download" class="w-5 h-5"></i>
-                BAIXAR ZIP
+                <span id="txt-download">BAIXAR ZIP</span>
             </button>
         </div>
     </footer>
@@ -224,7 +224,6 @@
         let playingId = null;
         let savedSingleMode = 'smartSafe';
 
-        // INIT
         lucide.createIcons();
         
         function initAudio() {
@@ -234,7 +233,6 @@
         window.addEventListener('click', initAudio, { once: true });
         window.addEventListener('touchstart', initAudio, { once: true });
 
-        // TOAST
         function toast(msg, type='ok') {
             const el = document.getElementById('toast');
             const icon = document.getElementById('toast-icon');
@@ -248,12 +246,11 @@
             setTimeout(()=>el.classList.remove('show'), 3000);
         }
 
-        // --- HANDLERS ---
         document.getElementById('sel-pos').addEventListener('change', function() {
             if(this.value !== 'multi') savedSingleMode = this.value;
         });
 
-        // Load Vinheta
+        // --- HANDLERS (V19 ROBUST) ---
         async function loadVinheta(index, input) {
             const file = input.files[0];
             if (!file) return;
@@ -291,7 +288,7 @@
 
             if(active) {
                 slot.classList.add('active');
-                icon.className = "w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg shadow-green-500/30";
+                icon.className = "w-8 h-8 rounded-full bg-yellow-500 text-white flex items-center justify-center shadow-lg shadow-yellow-500/30";
                 icon.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
                 name.innerText = vinhetaSlots[index].name;
                 name.classList.add('text-white');
@@ -308,13 +305,6 @@
             document.getElementById('slot-counter').innerText = `${vinhetaSlots.filter(v=>v!==null).length}/4`;
         }
 
-        // Listeners Vinheta
-        document.getElementById('inp-v1').onchange = function(){ loadVinheta(0, this) };
-        document.getElementById('inp-v2').onchange = function(){ loadVinheta(1, this) };
-        document.getElementById('inp-v3').onchange = function(){ loadVinheta(2, this) };
-        document.getElementById('inp-v4').onchange = function(){ loadVinheta(3, this) };
-
-        // Music Load
         document.getElementById('inp-music').onchange = function() {
             if(this.files.length > 0) {
                 initAudio();
@@ -334,7 +324,6 @@
             this.value = '';
         };
 
-        // ZIP Load (Robusto)
         document.getElementById('inp-zip').onchange = async function() {
             const file = this.files[0];
             if (!file) return;
@@ -368,7 +357,6 @@
             this.value = '';
         };
 
-        // UI Update
         function updateState() {
             const list = document.getElementById('track-list');
             const empty = document.getElementById('empty-state');
@@ -441,7 +429,7 @@
             if(done && !isWorking) dl.classList.remove('hidden'); else dl.classList.add('hidden');
         }
 
-        // --- SAFE ZONE ALGORITHM (EVITA DROPS) ---
+        // --- SAFE ZONE ALGORITHM ---
         function findSafeSpot(raw, sampleRate, count, limitSeconds, minGapSecs, avoidEndSecs) {
             const avoidEndSamples = avoidEndSecs * sampleRate;
             const limitSamples = limitSeconds > 0 ? (limitSeconds * sampleRate) : raw.length;
@@ -449,16 +437,13 @@
 
             if (actLim <= 0) return [0];
 
-            // Janela maior (5s) para garantir que é uma parte calma de verdade
-            const winSize = Math.floor(sampleRate * 5); 
+            const winSize = Math.floor(sampleRate * 5); // 5s Window
             const step = Math.floor(sampleRate * 2);
             
             const profile = [];
             
-            // 1. Scan Energy
             for(let i=0; i < actLim - winSize; i += step) {
                 let sum = 0;
-                // Amostragem
                 for(let k=0; k<500; k++) {
                     const idx = Math.floor(i + (k*(winSize/500)));
                     if(idx < raw.length) sum += Math.abs(raw[idx]);
@@ -467,11 +452,10 @@
                 profile.push({ time: i/sampleRate, vol: avgVol });
             }
 
-            // 2. Ordena por volume mais baixo
             profile.sort((a,b) => a.vol - b.vol);
             
             const selected = [];
-            const candidates = profile.filter(p => p.time > 5); // Pula intro muito inicial
+            const candidates = profile.filter(p => p.time > 5);
 
             for(let cand of candidates) {
                 if(selected.length >= count) break;
@@ -484,8 +468,7 @@
             return selected.sort((a,b) => a - b);
         }
 
-        // --- PROCESSING ---
-        // SFX Gen
+        // --- SFX ---
         async function getSFX(type, sr) {
             if (!audioCtx || type === 'none') return null;
             if (type === 'airhorn') {
@@ -532,8 +515,7 @@
                         else if (logic.startsWith('smart') || logic === 'multi') {
                             let limit = 0;
                             if (logic === 'smart30') limit = 30;
-                            // Se for smartSafe, limit=0 (full song) mas com algoritmo de 5s window
-                            // min gap 20s
+                            // Safe Smart = 20s gap, 5s window
                             spots = findSafeSpot(mb.getChannelData(0), mb.sampleRate, activeV.length, limit, 20, 15);
                             if(!spots.length) spots=[0];
                         }
@@ -608,30 +590,43 @@
         window.delT = (id) => { tracks = tracks.filter(t => t.id !== id); updateState(); }
         document.getElementById('preview-audio').onended = () => { playingId=null; updateState(); };
         
-        // ZIP FIX (Ensure Blob is Ready)
+        // ZIP FIX: STORE Mode (No Compression for Speed/Memory)
         window.downloadZip = async () => { 
             const z = new JSZip(); 
             let c = 0; 
+            const dlBtn = document.getElementById('txt-download');
+            dlBtn.innerText = "GERANDO...";
+            
             tracks.forEach((t, idx) => { 
                 if (t.status === 'done' && t.blob) { 
-                    // Garante nome único para evitar sobrescrita
                     let safeName = t.file.name.replace(/[^a-z0-9]/gi, '_').replace(/\.[^/.]+$/, "");
-                    z.file(`${idx+1}_${safeName}_Mix.wav`, t.blob); 
+                    z.file(`${idx+1}_${safeName}_SuitCds.wav`, t.blob); 
                     c++; 
                 } 
             }); 
+            
             if (c > 0) { 
-                toast("Gerando ZIP..."); 
                 try {
-                    const b = await z.generateAsync({type:"blob"}); 
+                    // COMPRESSION: STORE (Level 0) - Crucial for large batches!
+                    const b = await z.generateAsync({
+                        type:"blob", 
+                        compression: "STORE",
+                        streamFiles: true
+                    }, (meta) => {
+                        dlBtn.innerText = `ZIP: ${meta.percent.toFixed(0)}%`;
+                    }); 
+                    
                     const a = document.createElement('a'); 
                     a.href = URL.createObjectURL(b); 
-                    a.download = "SuitCds_Master_Mix.zip"; 
+                    a.download = "SuitCds_Master_Pack.zip"; 
                     document.body.appendChild(a); 
                     a.click(); 
                     document.body.removeChild(a);
+                    dlBtn.innerText = "BAIXAR ZIP";
+                    toast("Download Iniciado!");
                 } catch(e) {
-                    toast("Erro ao gerar ZIP", "err");
+                    toast("Erro de Memória no ZIP", "err");
+                    dlBtn.innerText = "ERRO";
                 }
             } else {
                 toast("Nenhum arquivo pronto", "err");
