@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SuitCds V26 Master</title>
+    <title>SuitCds V27 ZIP Rescue</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -109,30 +109,30 @@
                 <div class="w-10 h-10 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center">
                     <i data-lucide="book-open" class="w-5 h-5"></i>
                 </div>
-                <h2 class="text-xl font-bold">Como Usar</h2>
+                <h2 class="text-xl font-bold">Guia Rápido</h2>
             </div>
 
             <div class="space-y-4 text-sm text-zinc-300">
                 <div class="flex gap-3">
                     <span class="font-bold text-white bg-zinc-800 w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
-                    <p>Carregue sua vinheta no <strong>Slot 1</strong>. Pode ser MP3 ou Vídeo.</p>
+                    <p>Toque no <strong>Slot 1</strong> e carregue sua vinheta.</p>
                 </div>
                 <div class="flex gap-3">
                     <span class="font-bold text-white bg-zinc-800 w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
-                    <p>Escolha a lógica <strong>"Safe"</strong> para evitar cortar o final da música.</p>
+                    <p>Escolha <strong>ABRIR ZIP</strong> ou adicione músicas soltas (Máx 40).</p>
                 </div>
                 <div class="flex gap-3">
                     <span class="font-bold text-white bg-zinc-800 w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
-                    <p>Adicione até <strong>40 músicas</strong> (soltas ou ZIP).</p>
+                    <p>Use a lógica <strong>Safe</strong> para evitar cortar o final.</p>
                 </div>
                 <div class="flex gap-3">
                     <span class="font-bold text-white bg-zinc-800 w-6 h-6 rounded-full flex items-center justify-center text-xs">4</span>
-                    <p>Clique em <strong>INICIAR</strong> e aguarde. O ZIP sai pronto!</p>
+                    <p>Clique em <strong>INICIAR</strong>. Baixe o ZIP final quando acabar.</p>
                 </div>
             </div>
 
             <button onclick="toggleTutorial()" class="w-full mt-8 bg-white text-black font-bold py-3 rounded-xl hover:bg-zinc-200">
-                ENTENDI
+                COMEÇAR
             </button>
         </div>
     </div>
@@ -142,11 +142,11 @@
         <div class="max-w-xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-gradient-to-br from-green-600 to-emerald-700 text-white rounded-xl flex items-center justify-center shadow-lg shadow-green-900/30">
-                    <i data-lucide="zap" class="w-5 h-5 fill-current"></i>
+                    <i data-lucide="folder-archive" class="w-5 h-5 fill-current"></i>
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight text-white leading-tight">SuitCds</h1>
-                    <p class="text-[10px] text-zinc-500 font-bold tracking-widest uppercase">Master V26</p>
+                    <p class="text-[10px] text-zinc-500 font-bold tracking-widest uppercase">ZIP Rescue V27</p>
                 </div>
             </div>
             <button onclick="toggleTutorial()" class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 flex items-center justify-center hover:text-white transition-colors">
@@ -205,9 +205,10 @@
                     <div class="card p-2">
                         <label class="text-[9px] text-zinc-500 font-bold px-2 uppercase">Lógica</label>
                         <select id="sel-pos" class="w-full bg-transparent text-xs text-white p-2 outline-none cursor-pointer">
-                            <option value="smartSafe" selected>🛡️ Safe (1min)</option>
+                            <option value="smartSafe" selected>🛡️ Safe (1 min Safe)</option>
                             <option value="smart30">🧠 Smart (30s)</option>
                             <option value="start">▶️ Início (0:00)</option>
+                            <option value="intro">⏳ Intro (15s)</option>
                             <option value="multi" disabled>✨ Multi (Auto)</option>
                         </select>
                     </div>
@@ -260,7 +261,7 @@
                 </div>
             </div>
 
-            <!-- LISTA (Com Player Embutido) -->
+            <!-- LISTA -->
             <div id="list-container" class="hidden space-y-3 pb-4">
                 <!-- Items Injected Here -->
             </div>
@@ -281,16 +282,16 @@
             </button>
             <button id="btn-download" onclick="downloadZip()" class="hidden w-[40%] bg-white text-black h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">
                 <i data-lucide="download" class="w-4 h-4"></i>
-                <span id="txt-dl">ZIP</span>
+                <span>ZIP</span>
             </button>
         </div>
     </footer>
 
     <script>
-        // --- SNOW ---
+        // --- SNOW EFFECT ---
         function createSnow() {
             const container = document.body;
-            for(let i=0; i<25; i++) {
+            for(let i=0; i<30; i++) {
                 const flake = document.createElement('div');
                 flake.classList.add('snowflake');
                 const size = Math.random() * 2 + 1 + 'px';
@@ -305,7 +306,7 @@
         }
         createSnow();
 
-        // --- VARIAVEIS ---
+        // --- CORE VARIABLES ---
         let audioCtx;
         let vinhetaSlots = [null, null, null, null];
         let tracks = [];
@@ -316,7 +317,7 @@
 
         lucide.createIcons();
 
-        // --- INIT ---
+        // Unlock Audio
         function initAudio() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -325,13 +326,11 @@
 
         function notify(msg, type='info') {
             const t = document.getElementById('toast');
-            const i = t.querySelector('i');
             document.getElementById('toast-msg').innerText = msg;
             
-            if(type==='error') { t.style.color = '#ef4444'; i.setAttribute('data-lucide', 'alert-circle'); }
-            else { t.style.color = '#000'; i.setAttribute('data-lucide', 'check'); }
+            if(type==='error') { t.style.color = '#ef4444'; }
+            else { t.style.color = '#000'; }
             
-            lucide.createIcons();
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2500);
         }
@@ -353,7 +352,7 @@
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
-        // --- VINHETA LOADING ---
+        // --- LOADERS ---
         async function loadVinheta(idx, input) {
             const file = input.files[0];
             if(!file) return;
@@ -420,6 +419,7 @@
             this.value = '';
         };
 
+        // --- ZIP RESCUE LOGIC (FILTRA LIXO) ---
         document.getElementById('inp-zip').onchange = async function() {
             const f = this.files[0];
             if(!f) return;
@@ -430,24 +430,36 @@
                 let count = 0;
                 let pending = [];
                 
+                const validExt = ['.mp3', '.wav', '.m4a', '.mp4', '.mov', '.aac', '.flac', '.ogg'];
+
                 for(let k of Object.keys(c.files)) {
-                    if(!c.files[k].dir && !k.startsWith('__')) {
-                        pending.push(c.files[k]);
+                    const entry = c.files[k];
+                    const name = entry.name.toLowerCase();
+                    // 1. Ignora pastas
+                    // 2. Ignora __MACOSX
+                    // 3. Ignora arquivos ocultos (começa com .)
+                    // 4. Só aceita extensões válidas
+                    if(!entry.dir && !name.includes('__macosx') && !name.split('/').pop().startsWith('.') && validExt.some(ext => name.endsWith(ext))) {
+                        pending.push(entry);
                     }
+                }
+
+                if(pending.length === 0) {
+                    notify("ZIP sem áudio válido", "error");
+                    return;
                 }
 
                 if(!checkLimit(pending.length)) return;
 
                 for(let entry of pending) {
                     const b = await entry.async("blob");
-                    // Clean Filename
-                    const cleanName = entry.name.split('/').pop().replace(/[^a-zA-Z0-9\.\-\_ ]/g, "");
+                    const cleanName = entry.name.split('/').pop();
                     tracks.push({ id: Math.random().toString(36).slice(2), file: new File([b], cleanName), status: 'pending', msg: 'Do ZIP', blob: null, spot: 0 });
                     count++;
                 }
-                notify(`${count} extraídos`);
+                notify(`${count} músicas extraídas`);
                 updateState();
-            } catch(e) { notify("Erro no ZIP", "error"); }
+            } catch(e) { console.error(e); notify("Erro no ZIP", "error"); }
             this.value = '';
         };
 
@@ -460,7 +472,6 @@
             const activeV = vinhetaSlots.filter(v=>v).length;
             const selPos = document.getElementById('sel-pos');
             
-            // Auto-Switch Logic
             if(activeV > 1) {
                 selPos.innerHTML = '<option value="multi">✨ Multi-Vinheta (Auto)</option>';
                 selPos.disabled = true;
@@ -472,7 +483,6 @@
             document.getElementById('slot-counter').innerText = `${activeV}/4`;
             document.getElementById('track-counter').innerText = `${tracks.length}/${MAX_TRACKS}`;
 
-            // List Render
             if(tracks.length > 0) {
                 empty.classList.add('hidden'); list.classList.remove('hidden');
                 list.innerHTML = tracks.map(t => {
@@ -565,12 +575,12 @@
         function findSafeSpot(raw, sr, count, limit, vinhetaLen) {
             const windowNeed = (vinhetaLen + 2) * sr; 
             const limitSamples = limit > 0 ? (limit * sr) : raw.length;
-            const actLim = Math.min(limitSamples, raw.length - (60*sr)); // 1 MINUTE SAFE ZONE
+            const actLim = Math.min(limitSamples, raw.length - (60*sr)); 
 
             if (actLim <= windowNeed) return [0];
 
             const step = Math.floor(sr * 1);
-            let bestSpot = 5 * sr; // Skip 5s intro
+            let bestSpot = 5 * sr; 
             let bestEnergy = Infinity;
 
             for(let i = 5*sr; i < actLim - windowNeed; i += step) {
@@ -674,7 +684,7 @@
                         tracks[i].msg = 'Sucesso';
                         tracks[i].duration = mb.duration;
                         
-                        // LIMPEZA DE MEMÓRIA (CRUCIAL PARA 40 MÚSICAS)
+                        // CLEAR MEMORY
                         tracks[i].file = null; 
 
                     } catch(e) {
@@ -699,13 +709,13 @@
 
         window.downloadZip = async () => { 
             const z = new JSZip(); let c = 0;
-            const btn = document.getElementById('txt-dl');
-            btn.innerText = "ZIPANDO...";
+            const btn = document.getElementById('btn-download');
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> ZIPANDO...`;
+            lucide.createIcons();
             
             tracks.forEach((t, idx) => { 
                 if (t.status === 'done' && t.blob) { 
-                    // NOME LIMPO
-                    let n = `Música_${idx+1}.wav`;
+                    let n = `Faixa_${idx+1}.wav`;
                     z.file(n, t.blob); 
                     c++; 
                 } 
@@ -715,8 +725,9 @@
                     const b = await z.generateAsync({type:"blob", compression:"STORE"}, (meta) => {
                        btn.innerText = `${meta.percent.toFixed(0)}%`;
                     }); 
-                    const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "SuitCds_Pack.zip"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                    btn.innerText = "BAIXADO";
+                    const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "SuitCds_Master.zip"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                    btn.innerHTML = `<i data-lucide="download" class="w-4 h-4"></i> ZIP`;
+                    lucide.createIcons();
                 } catch(e) { notify("Erro memória", "error"); btn.innerText = "ERRO"; }
             } else notify("Nada para baixar", "error");
         };
