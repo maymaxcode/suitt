@@ -15,44 +15,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
-        /* BASE */
+        /* BASE & THEME */
         body { 
-            background-color: #000; 
+            background-color: #050505; 
             color: #e4e4e7; 
             -webkit-tap-highlight-color: transparent;
             font-family: 'Inter', system-ui, sans-serif;
             overflow-x: hidden;
         }
 
-        /* NEVE */
+        /* ANIMAÇÃO DE FUNDO (NEVE) */
         .snowflake {
-            position: fixed; top: -10px; background: rgba(255,255,255,0.4);
+            position: fixed; top: -10px; background: rgba(255,255,255,0.2);
             border-radius: 50%; pointer-events: none; z-index: 0; animation: fall linear infinite;
         }
         @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* PHANTOM INPUT (Clique Nativo) */
+        /* INPUT INVISÍVEL PARA CLIQUE EM CARD INTEIRO */
         .phantom-input {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0; z-index: 20; cursor: pointer;
         }
 
-        /* CARD STYLE */
+        /* EFEITO DE VIDRO (GLASSMORPHISM) */
         .glass { 
-            background: rgba(20, 20, 23, 0.95); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
+            background: rgba(20, 20, 25, 0.8); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
             border: 1px solid rgba(255,255,255,0.08);
         }
         .card {
-            @apply glass; border-radius: 16px; position: relative; z-index: 10; transition: transform 0.1s;
+            @apply glass; border-radius: 16px; position: relative; z-index: 10; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .card:active { transform: scale(0.99); background: rgba(30, 30, 35, 1); }
+        .card:active { transform: scale(0.98); background: rgba(40, 40, 45, 0.9); }
         
-        /* SLOT ATIVO */
-        .slot-filled { border-color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+        .slot-filled { border-color: #22c55e; background: rgba(34, 197, 94, 0.05); }
         
-        /* PLAYER */
+        /* PLAYER CUSTOMIZADO */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
@@ -62,180 +61,103 @@
             width: 100%; height: 2px; cursor: pointer; background: #3f3f46; border-radius: 2px;
         }
         
-        /* UTILS */
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        /* TOAST & MODAL */
+        /* TOAST NOTIFICATION */
         .toast {
-            position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%) translateY(20px);
-            background: #fff; color: #000; padding: 10px 20px; border-radius: 50px;
-            font-weight: 700; font-size: 12px; opacity: 0; pointer-events: none;
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: #fff; color: #000; padding: 12px 24px; border-radius: 50px;
+            font-weight: 700; font-size: 13px; opacity: 0; pointer-events: none;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100;
             display: flex; align-items: center; gap: 8px; width: max-content;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-            z-index: 90; display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
-        .modal-overlay.open { opacity: 1; pointer-events: auto; }
-        .modal-content {
-            background: #111; border: 1px solid #333; width: 90%; max-width: 400px;
-            border-radius: 20px; padding: 24px; transform: scale(0.9); transition: transform 0.3s ease;
-        }
-        .modal-overlay.open .modal-content { transform: scale(1); }
     </style>
 </head>
-<body class="min-h-screen pb-44">
+<body class="min-h-screen pb-44 selection:bg-green-500/30">
 
     <audio id="preview-audio" playsinline webkit-playsinline></audio>
 
     <!-- TOAST -->
     <div id="toast"><i data-lucide="info" class="w-4 h-4"></i> <span id="toast-msg">Info</span></div>
 
-    <!-- TUTORIAL MODAL -->
-    <div id="tutorial-modal" class="modal-overlay">
-        <div class="modal-content relative">
-            <button onclick="toggleTutorial()" class="absolute top-4 right-4 text-zinc-500 hover:text-white">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
-            
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center">
-                    <i data-lucide="book-open" class="w-5 h-5"></i>
-                </div>
-                <h2 class="text-xl font-bold">Guia Rápido</h2>
-            </div>
-
-            <div class="space-y-4 text-sm text-zinc-300">
-                <div class="flex gap-3">
-                    <span class="font-bold text-white bg-zinc-800 w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
-                    <p>Toque no <strong>Slot 1</strong> e carregue sua vinheta.</p>
-                </div>
-                <div class="flex gap-3">
-                    <span class="font-bold text-white bg-zinc-800 w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
-                    <p>Escolha <strong>ABRIR ZIP</strong> ou adicione músicas soltas (Máx 40).</p>
-                </div>
-                <div class="flex gap-3">
-                    <span class="font-bold text-white bg-zinc-800 w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
-                    <p>Use a lógica <strong>Safe</strong> para evitar cortar o final.</p>
-                </div>
-                <div class="flex gap-3">
-                    <span class="font-bold text-white bg-zinc-800 w-6 h-6 rounded-full flex items-center justify-center text-xs">4</span>
-                    <p>Clique em <strong>INICIAR</strong>. Baixe o ZIP final quando acabar.</p>
-                </div>
-            </div>
-
-            <button onclick="toggleTutorial()" class="w-full mt-8 bg-white text-black font-bold py-3 rounded-xl hover:bg-zinc-200">
-                COMEÇAR
-            </button>
-        </div>
-    </div>
-
     <!-- HEADER -->
     <header class="pt-8 pb-6 px-6 border-b border-white/5 bg-black/60 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-gradient-to-br from-green-600 to-emerald-700 text-white rounded-xl flex items-center justify-center shadow-lg shadow-green-900/30">
+                <div class="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-800 text-white rounded-xl flex items-center justify-center shadow-lg shadow-green-900/40">
                     <i data-lucide="folder-archive" class="w-5 h-5 fill-current"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold tracking-tight text-white leading-tight">SuitCds</h1>
-                    <p class="text-[10px] text-zinc-500 font-bold tracking-widest uppercase">ZIP Rescue V27</p>
+                    <h1 class="text-xl font-bold tracking-tight text-white leading-tight">SuitCds</h1>
+                    <p class="text-[10px] text-zinc-500 font-bold tracking-[0.2em] uppercase">ZIP Rescue V27</p>
                 </div>
             </div>
-            <button onclick="toggleTutorial()" class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 flex items-center justify-center hover:text-white transition-colors">
-                <i data-lucide="help-circle" class="w-5 h-5"></i>
-            </button>
+            <div class="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-500">
+                BETA
+            </div>
         </div>
     </header>
 
-    <main class="max-w-xl mx-auto p-4 space-y-8 relative z-10">
+    <main class="max-w-xl mx-auto p-5 space-y-8 relative z-10">
 
         <!-- 1. VINHETAS -->
         <section>
             <div class="flex justify-between items-end mb-4 px-1">
-                <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">1. Vinhetas</h2>
-                <span id="slot-counter" class="text-[10px] text-zinc-600 font-mono">0/4</span>
+                <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+                    <span class="w-4 h-4 rounded bg-zinc-800 text-white flex items-center justify-center text-[10px]">1</span> 
+                    Carregar Vinhetas
+                </h2>
+                <span id="slot-counter" class="text-[10px] text-zinc-600 font-mono bg-zinc-900 px-2 py-0.5 rounded">0/4</span>
             </div>
             
             <div class="grid grid-cols-2 gap-3">
                 <!-- SLOT 1 -->
-                <div class="card h-24 flex flex-col items-center justify-center gap-2" id="slot-1">
-                    <input type="file" class="phantom-input" accept="*" onchange="loadVinheta(0, this)">
-                    <div id="icon-1" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 transition-colors">1</div>
-                    <span id="name-1" class="text-[11px] font-medium text-zinc-400 truncate w-full px-3 text-center">Toque Aqui</span>
-                    <button onclick="clearVinheta(0, event)" id="btn-clr-1" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-white z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
+                <div class="card h-24 flex flex-col items-center justify-center gap-2 group" id="slot-1">
+                    <input type="file" class="phantom-input" accept="audio/*" onchange="loadVinheta(0, this)">
+                    <div id="icon-1" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 group-hover:border-green-500/50 transition-colors">1</div>
+                    <span id="name-1" class="text-[11px] font-medium text-zinc-400 truncate w-full px-3 text-center">Toque para adicionar</span>
+                    <button onclick="clearVinheta(0, event)" id="btn-clr-1" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-red-400 z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
                 </div>
                 <!-- SLOT 2 -->
-                <div class="card h-24 flex flex-col items-center justify-center gap-2" id="slot-2">
-                    <input type="file" class="phantom-input" accept="*" onchange="loadVinheta(1, this)">
-                    <div id="icon-2" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 transition-colors">2</div>
-                    <span id="name-2" class="text-[11px] font-medium text-zinc-400 truncate w-full px-3 text-center">Toque Aqui</span>
-                    <button onclick="clearVinheta(1, event)" id="btn-clr-2" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-white z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
-                </div>
-                <!-- SLOT 3 -->
-                <div class="card h-24 flex flex-col items-center justify-center gap-2" id="slot-3">
-                    <input type="file" class="phantom-input" accept="*" onchange="loadVinheta(2, this)">
-                    <div id="icon-3" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 transition-colors">3</div>
-                    <span id="name-3" class="text-[11px] font-medium text-zinc-400 truncate w-full px-3 text-center">Toque Aqui</span>
-                    <button onclick="clearVinheta(2, event)" id="btn-clr-3" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-white z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
-                </div>
-                <!-- SLOT 4 -->
-                <div class="card h-24 flex flex-col items-center justify-center gap-2" id="slot-4">
-                    <input type="file" class="phantom-input" accept="*" onchange="loadVinheta(3, this)">
-                    <div id="icon-4" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 transition-colors">4</div>
-                    <span id="name-4" class="text-[11px] font-medium text-zinc-400 truncate w-full px-3 text-center">Toque Aqui</span>
-                    <button onclick="clearVinheta(3, event)" id="btn-clr-4" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-white z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
+                <div class="card h-24 flex flex-col items-center justify-center gap-2 group" id="slot-2">
+                    <input type="file" class="phantom-input" accept="audio/*" onchange="loadVinheta(1, this)">
+                    <div id="icon-2" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 group-hover:border-green-500/50 transition-colors">2</div>
+                    <span id="name-2" class="text-[11px] font-medium text-zinc-400 truncate w-full px-3 text-center">Toque para adicionar</span>
+                    <button onclick="clearVinheta(1, event)" id="btn-clr-2" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-red-400 z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
                 </div>
             </div>
         </section>
 
         <!-- 2. SETUP -->
         <section>
-            <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-4 px-1">2. Painel DJ</h2>
+            <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-4 px-1 flex items-center gap-2">
+                <span class="w-4 h-4 rounded bg-zinc-800 text-white flex items-center justify-center text-[10px]">2</span> 
+                Configuração DJ
+            </h2>
             
             <div class="space-y-3">
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="card p-2">
-                        <label class="text-[9px] text-zinc-500 font-bold px-2 uppercase">Lógica</label>
-                        <select id="sel-pos" class="w-full bg-transparent text-xs text-white p-2 outline-none cursor-pointer">
-                            <option value="smartSafe" selected>🛡️ Safe (1 min Safe)</option>
-                            <option value="smart30">🧠 Smart (30s)</option>
+                    <div class="card p-3 relative overflow-hidden">
+                        <label class="text-[9px] text-zinc-500 font-bold uppercase block mb-1">Posição</label>
+                        <select id="sel-pos" class="w-full bg-transparent text-xs text-white outline-none cursor-pointer appearance-none relative z-10 font-medium">
+                            <option value="safeEnd">🛡️ Final Safe (Fim -15s)</option>
                             <option value="start">▶️ Início (0:00)</option>
-                            <option value="intro">⏳ Intro (15s)</option>
-                            <option value="multi" disabled>✨ Multi (Auto)</option>
+                            <option value="intro">⏳ Intro (0:15)</option>
+                            <option value="middle">📏 Meio (50%)</option>
                         </select>
+                        <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-600 absolute right-3 bottom-3 z-0"></i>
                     </div>
-                    <div class="card p-2">
-                        <label class="text-[9px] text-zinc-500 font-bold px-2 uppercase">Estilo</label>
-                        <select id="sel-mix" class="w-full bg-transparent text-xs text-white p-2 outline-none cursor-pointer">
-                            <option value="ducking">📻 Rádio</option>
-                            <option value="cut">✂️ Seco</option>
-                            <option value="overlay">🔥 Rave</option>
+                    <div class="card p-3 relative overflow-hidden">
+                        <label class="text-[9px] text-zinc-500 font-bold uppercase block mb-1">Mixagem</label>
+                        <select id="sel-mix" class="w-full bg-transparent text-xs text-white outline-none cursor-pointer appearance-none relative z-10 font-medium">
+                            <option value="ducking">📻 Rádio (Ducking)</option>
+                            <option value="overlay">🔥 Colagem (Overlay)</option>
+                            <option value="cut">✂️ Seco (Cut)</option>
                         </select>
-                    </div>
-                </div>
-
-                <!-- SFX -->
-                <div class="card p-3 flex items-center gap-3">
-                    <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-400 shrink-0">
-                        <i data-lucide="zap" class="w-4 h-4"></i>
-                    </div>
-                    <div class="flex-1">
-                        <label class="text-[9px] text-zinc-500 font-bold uppercase block">Efeito Sonoro</label>
-                        <select id="sel-sfx" class="w-full bg-transparent text-sm text-white outline-none cursor-pointer">
-                            <option value="none">Nenhum</option>
-                            <option value="airhorn">📣 Airhorn</option>
-                            <option value="laser">🔫 Laser</option>
-                            <option value="impact">💥 Impacto</option>
-                            <option value="riser">🚀 Riser</option>
-                        </select>
+                        <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-600 absolute right-3 bottom-3 z-0"></i>
                     </div>
                 </div>
             </div>
@@ -244,54 +166,64 @@
         <!-- 3. MÚSICAS -->
         <section>
             <div class="flex justify-between items-end mb-4 px-1">
-                <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">3. Playlist</h2>
-                <span id="track-counter" class="text-[10px] text-zinc-600 font-mono">0/40</span>
+                <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+                    <span class="w-4 h-4 rounded bg-zinc-800 text-white flex items-center justify-center text-[10px]">3</span> 
+                    Playlist
+                </h2>
+                <span id="track-counter" class="text-[10px] text-zinc-600 font-mono bg-zinc-900 px-2 py-0.5 rounded">0/50</span>
             </div>
 
             <div class="flex gap-3 mb-4">
-                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-zinc-900 cursor-pointer">
-                    <input type="file" class="phantom-input" id="inp-music" multiple accept="*">
-                    <i data-lucide="music" class="w-4 h-4 text-green-400"></i>
+                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-zinc-800 cursor-pointer relative overflow-hidden">
+                    <input type="file" class="phantom-input" id="inp-music" multiple accept="audio/*">
+                    <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+                        <i data-lucide="music" class="w-4 h-4 text-green-400"></i>
+                    </div>
                     <span class="text-[10px] font-bold text-zinc-300">ARQUIVOS</span>
                 </div>
-                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-zinc-900 cursor-pointer">
-                    <input type="file" class="phantom-input" id="inp-zip" accept="*">
-                    <i data-lucide="archive" class="w-4 h-4 text-emerald-400"></i>
+                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-zinc-800 cursor-pointer relative overflow-hidden">
+                    <input type="file" class="phantom-input" id="inp-zip" accept=".zip">
+                    <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+                        <i data-lucide="archive" class="w-4 h-4 text-emerald-400"></i>
+                    </div>
                     <span class="text-[10px] font-bold text-zinc-300">ABRIR ZIP</span>
                 </div>
             </div>
 
             <!-- LISTA -->
-            <div id="list-container" class="hidden space-y-3 pb-4">
+            <div id="list-container" class="hidden space-y-2 pb-4">
                 <!-- Items Injected Here -->
             </div>
             
-            <div id="empty-msg" class="text-center py-10 text-zinc-700">
-                <i data-lucide="disc" class="w-8 h-8 mx-auto mb-2 opacity-20"></i>
-                <p class="text-xs">Lista vazia (Max 40)</p>
+            <div id="empty-msg" class="text-center py-12 border border-dashed border-zinc-800 rounded-2xl">
+                <div class="w-12 h-12 rounded-full bg-zinc-900 mx-auto flex items-center justify-center mb-3">
+                    <i data-lucide="disc" class="w-5 h-5 text-zinc-600"></i>
+                </div>
+                <p class="text-xs text-zinc-500 font-medium">Lista vazia (Max 50)</p>
+                <p class="text-[10px] text-zinc-600 mt-1">MP3, WAV, M4A suportados</p>
             </div>
         </section>
 
     </main>
 
     <!-- FOOTER -->
-    <footer class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-xl border-t border-white/5 p-5 z-50 pb-8">
+    <footer class="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-xl border-t border-white/5 p-5 z-50 pb-8">
         <div class="max-w-xl mx-auto flex gap-3">
-            <button id="btn-process" onclick="startMix()" disabled class="flex-1 bg-zinc-900 text-zinc-600 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50">
+            <button id="btn-process" onclick="startProcessing()" disabled class="flex-1 bg-zinc-900 text-zinc-600 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                 <span>AGUARDANDO...</span>
             </button>
-            <button id="btn-download" onclick="downloadZip()" class="hidden w-[40%] bg-white text-black h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+            <button id="btn-download" onclick="downloadZip()" class="hidden w-[40%] bg-white text-black h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:bg-zinc-200">
                 <i data-lucide="download" class="w-4 h-4"></i>
-                <span>ZIP</span>
+                <span>BAIXAR ZIP</span>
             </button>
         </div>
     </footer>
 
     <script>
-        // --- SNOW EFFECT ---
+        // --- EFEITO DE NEVE ---
         function createSnow() {
             const container = document.body;
-            for(let i=0; i<30; i++) {
+            for(let i=0; i<20; i++) {
                 const flake = document.createElement('div');
                 flake.classList.add('snowflake');
                 const size = Math.random() * 2 + 1 + 'px';
@@ -299,51 +231,37 @@
                 flake.style.height = size;
                 flake.style.left = Math.random() * 100 + 'vw';
                 flake.style.opacity = Math.random() * 0.3 + 0.1;
-                flake.style.animationDuration = Math.random() * 5 + 10 + 's';
+                flake.style.animationDuration = Math.random() * 10 + 10 + 's';
                 flake.style.animationDelay = Math.random() * 5 + 's';
                 container.appendChild(flake);
             }
         }
         createSnow();
 
-        // --- CORE VARIABLES ---
+        // --- VARIÁVEIS GLOBAIS ---
         let audioCtx;
-        let vinhetaSlots = [null, null, null, null];
+        let vinhetaSlots = [null, null]; // Apenas 2 slots para simplificar a UI mobile, mas expansível
         let tracks = [];
         let isProcessing = false;
         let playingId = null;
-        let savedMode = 'smartSafe';
-        const MAX_TRACKS = 40;
+        const MAX_TRACKS = 50;
 
         lucide.createIcons();
 
-        // Unlock Audio
+        // Inicializa AudioContext no primeiro clique
         function initAudio() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }
-        ['click','touchstart','change'].forEach(e => document.addEventListener(e, initAudio, {passive:true}));
+        ['click','touchstart'].forEach(e => document.addEventListener(e, initAudio, {passive:true, once:true}));
 
         function notify(msg, type='info') {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
-            
-            if(type==='error') { t.style.color = '#ef4444'; }
-            else { t.style.color = '#000'; }
-            
+            t.style.color = type === 'error' ? '#ef4444' : '#000';
             t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2500);
+            setTimeout(() => t.classList.remove('show'), 3000);
         }
-
-        // --- TUTORIAL ---
-        function toggleTutorial() {
-            document.getElementById('tutorial-modal').classList.toggle('open');
-        }
-
-        // --- LOGIC ---
-        document.getElementById('sel-pos').addEventListener('change', function(){
-            if(this.value !== 'multi') savedMode = this.value;
-        });
 
         function formatTime(sec) {
             if(!sec || isNaN(sec)) return "0:00";
@@ -352,14 +270,15 @@
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
-        // --- LOADERS ---
+        // --- CARREGAMENTO DE VINHETAS ---
         async function loadVinheta(idx, input) {
             const file = input.files[0];
             if(!file) return;
+            initAudio();
             
             const nameEl = document.getElementById(`name-${idx+1}`);
             const iconEl = document.getElementById(`icon-${idx+1}`);
-            nameEl.innerText = "Lendo...";
+            nameEl.innerText = "Decodificando...";
             
             try {
                 const ab = await file.arrayBuffer();
@@ -368,18 +287,18 @@
                 vinhetaSlots[idx] = { buffer: buf, duration: buf.duration, name: file.name };
                 
                 document.getElementById(`slot-${idx+1}`).classList.add('slot-filled');
-                iconEl.className = "w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center";
+                iconEl.className = "w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg shadow-green-500/30";
                 iconEl.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
                 nameEl.innerText = file.name;
                 nameEl.classList.add('text-white');
                 document.getElementById(`btn-clr-${idx+1}`).classList.remove('hidden');
                 
                 lucide.createIcons();
-                notify("Vinheta carregada");
                 updateState();
             } catch(e) {
-                notify("Erro no arquivo", "error");
+                notify("Erro no áudio. Tente outro arquivo.", "error");
                 nameEl.innerText = "Erro";
+                console.error(e);
             }
             input.value = ''; 
         }
@@ -392,16 +311,16 @@
             const nameEl = document.getElementById(`name-${idx+1}`);
             iconEl.className = "w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 transition-colors";
             iconEl.innerHTML = idx+1;
-            nameEl.innerText = "Toque Aqui";
+            nameEl.innerText = "Toque para adicionar";
             nameEl.classList.remove('text-white');
             document.getElementById(`btn-clr-${idx+1}`).classList.add('hidden');
             updateState();
         }
 
-        // --- MUSIC LOADING (LIMIT 40) ---
+        // --- CARREGAMENTO DE MÚSICAS ---
         function checkLimit(addCount) {
             if(tracks.length + addCount > MAX_TRACKS) {
-                notify(`Limite de ${MAX_TRACKS} músicas!`, "error");
+                notify(`Limite de ${MAX_TRACKS} músicas atingido!`, "error");
                 return false;
             }
             return true;
@@ -411,7 +330,14 @@
             if(this.files.length) {
                 if(!checkLimit(this.files.length)) return;
                 Array.from(this.files).forEach(f => {
-                    tracks.push({ id: Math.random().toString(36).slice(2), file: f, status: 'pending', msg: 'Aguardando', blob: null, spot: 0 });
+                    tracks.push({ 
+                        id: Math.random().toString(36).slice(2), 
+                        file: f, 
+                        status: 'pending', 
+                        msg: 'Aguardando', 
+                        blob: null,
+                        originalName: f.name 
+                    });
                 });
                 notify(`${this.files.length} adicionadas`);
                 updateState();
@@ -419,33 +345,30 @@
             this.value = '';
         };
 
-        // --- ZIP RESCUE LOGIC (FILTRA LIXO) ---
+        // --- LÓGICA DE UNZIP ---
         document.getElementById('inp-zip').onchange = async function() {
             const f = this.files[0];
             if(!f) return;
-            notify("Lendo ZIP...");
+            notify("Lendo ZIP... aguarde");
             try {
                 const z = new JSZip();
                 const c = await z.loadAsync(f);
                 let count = 0;
                 let pending = [];
                 
-                const validExt = ['.mp3', '.wav', '.m4a', '.mp4', '.mov', '.aac', '.flac', '.ogg'];
+                const validExt = ['.mp3', '.wav', '.m4a', '.mp4', '.aac', '.flac', '.ogg'];
 
                 for(let k of Object.keys(c.files)) {
                     const entry = c.files[k];
-                    const name = entry.name.toLowerCase();
-                    // 1. Ignora pastas
-                    // 2. Ignora __MACOSX
-                    // 3. Ignora arquivos ocultos (começa com .)
-                    // 4. Só aceita extensões válidas
-                    if(!entry.dir && !name.includes('__macosx') && !name.split('/').pop().startsWith('.') && validExt.some(ext => name.endsWith(ext))) {
+                    const nameLower = entry.name.toLowerCase();
+                    // Ignora lixo do macOS e pastas
+                    if(!entry.dir && !nameLower.includes('__macosx') && !nameLower.split('/').pop().startsWith('.') && validExt.some(ext => nameLower.endsWith(ext))) {
                         pending.push(entry);
                     }
                 }
 
                 if(pending.length === 0) {
-                    notify("ZIP sem áudio válido", "error");
+                    notify("Nenhum áudio válido encontrado no ZIP", "error");
                     return;
                 }
 
@@ -453,73 +376,100 @@
 
                 for(let entry of pending) {
                     const b = await entry.async("blob");
-                    const cleanName = entry.name.split('/').pop();
-                    tracks.push({ id: Math.random().toString(36).slice(2), file: new File([b], cleanName), status: 'pending', msg: 'Do ZIP', blob: null, spot: 0 });
+                    const cleanName = entry.name.split('/').pop(); // Remove pastas do nome
+                    tracks.push({ 
+                        id: Math.random().toString(36).slice(2), 
+                        file: new File([b], cleanName, { type: "audio/mpeg" }), 
+                        status: 'pending', 
+                        msg: 'Do ZIP', 
+                        blob: null,
+                        originalName: cleanName
+                    });
                     count++;
                 }
                 notify(`${count} músicas extraídas`);
                 updateState();
-            } catch(e) { console.error(e); notify("Erro no ZIP", "error"); }
+            } catch(e) { 
+                console.error(e); 
+                notify("Arquivo ZIP inválido ou corrompido", "error"); 
+            }
             this.value = '';
         };
 
-        // --- UPDATE UI ---
+        // --- REMOVER MÚSICA ---
+        window.remTrack = (id) => { 
+            if(playingId === id) { document.getElementById('preview-audio').pause(); playingId = null; }
+            tracks = tracks.filter(t => t.id !== id); 
+            updateState(); 
+        }
+
+        // --- PLAYER DE PREVIEW ---
+        const audioEl = document.getElementById('preview-audio');
+        
+        window.togglePlay = (id) => {
+            const t = tracks.find(x => x.id === id);
+            if(playingId === id) { 
+                audioEl.pause(); 
+                playingId = null; 
+            } else { 
+                if(t.blob) { 
+                    audioEl.src = URL.createObjectURL(t.blob); 
+                    audioEl.play(); 
+                    playingId = id; 
+                } 
+            }
+            updateState();
+        }
+        
+        audioEl.onended = () => { playingId = null; updateState(); };
+        
+        // --- UI UPDATE ---
         function updateState() {
             const list = document.getElementById('list-container');
             const empty = document.getElementById('empty-msg');
             const btn = document.getElementById('btn-process');
+            const activeV = vinhetaSlots.some(v=>v !== null); // Pelo menos uma vinheta
             
-            const activeV = vinhetaSlots.filter(v=>v).length;
-            const selPos = document.getElementById('sel-pos');
-            
-            if(activeV > 1) {
-                selPos.innerHTML = '<option value="multi">✨ Multi-Vinheta (Auto)</option>';
-                selPos.disabled = true;
-            } else if(selPos.disabled) {
-                selPos.disabled = false;
-                selPos.innerHTML = `<option value="smartSafe">🛡️ Safe (1 min antes fim)</option><option value="smart30">🧠 Smart (30s)</option><option value="start">▶️ Início (0:00)</option>`;
-                selPos.value = savedMode;
-            }
-            document.getElementById('slot-counter').innerText = `${activeV}/4`;
+            document.getElementById('slot-counter').innerText = `${vinhetaSlots.filter(x=>x).length}/2`;
             document.getElementById('track-counter').innerText = `${tracks.length}/${MAX_TRACKS}`;
 
             if(tracks.length > 0) {
                 empty.classList.add('hidden'); list.classList.remove('hidden');
+                
                 list.innerHTML = tracks.map(t => {
                     const isPlaying = playingId === t.id;
-                    let controls = '';
+                    let statusIcon = '';
+                    
+                    if(t.status === 'done') statusIcon = `<i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>`;
+                    else if(t.status === 'error') statusIcon = `<i data-lucide="alert-circle" class="w-4 h-4 text-red-500"></i>`;
+                    else if(t.status === 'processing') statusIcon = `<i data-lucide="loader-2" class="w-4 h-4 text-yellow-500 spin"></i>`;
+                    else statusIcon = `<i data-lucide="music" class="w-4 h-4 text-zinc-600"></i>`;
 
+                    let action = '';
                     if(t.status === 'done') {
-                        controls = `
-                        <div class="flex flex-col gap-2 w-full mt-2 pt-2 border-t border-white/5">
-                            <div class="flex items-center gap-2">
-                                <button onclick="togglePlay('${t.id}')" class="w-8 h-8 rounded-full ${isPlaying ? 'bg-green-600 text-white' : 'bg-zinc-800 text-green-400'} flex items-center justify-center shrink-0">
-                                    <i data-lucide="${isPlaying ? 'pause' : 'play'}" class="w-4 h-4 fill-current"></i>
-                                </button>
-                                <input type="range" min="0" max="${t.duration || 100}" value="${t.currentTime || 0}" oninput="seekTrack('${t.id}', this.value)" class="flex-1">
-                                <span class="text-[9px] font-mono text-zinc-500 w-8 text-right">${formatTime(t.currentTime || 0)}</span>
-                            </div>
-                            <button onclick="jumpToMix('${t.id}')" class="flex items-center justify-center gap-1 w-full bg-zinc-800/50 hover:bg-zinc-800 text-[10px] py-1.5 rounded text-zinc-300 transition-colors">
-                                <i data-lucide="crosshair" class="w-3 h-3 text-green-500"></i> Ouvir Mix (${formatTime(t.spot)})
-                            </button>
-                        </div>`;
-                    } else if(t.status === 'processing') {
-                        controls = `<div class="mt-2 text-[10px] text-zinc-500 flex items-center gap-2"><i data-lucide="loader-2" class="w-3 h-3 spin"></i> Processando...</div>`;
+                        action = `
+                        <button onclick="togglePlay('${t.id}')" class="w-8 h-8 rounded-full ${isPlaying ? 'bg-white text-black' : 'bg-zinc-800 text-green-400'} flex items-center justify-center transition-colors">
+                            <i data-lucide="${isPlaying ? 'pause' : 'play'}" class="w-3 h-3 fill-current"></i>
+                        </button>`;
                     }
 
                     return `
-                    <div class="card p-3 group">
-                        <div class="flex justify-between items-start">
-                            <div class="flex items-center gap-3 overflow-hidden">
-                                <i data-lucide="music" class="w-4 h-4 shrink-0 ${t.status==='done'?'text-green-500':'text-zinc-600'}"></i>
-                                <div class="truncate">
-                                    <div class="text-xs text-white truncate font-medium">${t.file.name}</div>
-                                    <div class="text-[10px] text-zinc-500">${t.msg}</div>
+                    <div class="card p-3 flex items-center justify-between group">
+                        <div class="flex items-center gap-3 overflow-hidden flex-1">
+                            <div class="shrink-0 w-8 h-8 flex items-center justify-center bg-zinc-900/50 rounded-lg">
+                                ${statusIcon}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-xs text-white truncate font-medium">${t.originalName}</div>
+                                <div class="text-[10px] text-zinc-500 flex items-center gap-1">
+                                    ${t.msg}
                                 </div>
                             </div>
-                            <button onclick="remTrack('${t.id}')" class="p-1 text-zinc-600 hover:text-red-500"><i data-lucide="x" class="w-3 h-3"></i></button>
                         </div>
-                        ${controls}
+                        <div class="flex items-center gap-2 pl-2">
+                            ${action}
+                            <button onclick="remTrack('${t.id}')" class="p-2 text-zinc-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
                     </div>`;
                 }).join('');
                 lucide.createIcons();
@@ -527,212 +477,263 @@
                 empty.classList.remove('hidden'); list.classList.add('hidden');
             }
 
-            const ready = activeV > 0 && tracks.length > 0;
-            const done = tracks.some(t => t.status === 'done');
+            const canProcess = activeV && tracks.length > 0;
+            const allDone = tracks.length > 0 && tracks.every(t => t.status === 'done');
             
             if(isProcessing) {
-                btn.disabled = true; btn.className = "flex-1 bg-zinc-800 text-zinc-500 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
-                btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> MIXANDO...`;
-            } else if(ready) {
-                btn.disabled = false; btn.className = "flex-1 bg-white text-black h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)] active:scale-95 transition-transform";
-                btn.innerText = done ? "REFAZER" : "INICIAR";
+                btn.disabled = true; 
+                btn.className = "flex-1 bg-zinc-800 text-zinc-400 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
+                btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> PROCESSANDO...`;
+            } else if(allDone) {
+                btn.className = "flex-1 bg-zinc-900 text-zinc-500 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
+                btn.innerText = "PROCESSAMENTO CONCLUÍDO";
+                btn.disabled = true;
+                document.getElementById('btn-download').classList.remove('hidden');
+            } else if(canProcess) {
+                btn.disabled = false; 
+                btn.className = "flex-1 bg-green-600 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(34,197,94,0.3)] active:scale-95 transition-all";
+                btn.innerHTML = `INICIAR MIXAGEM`;
+                document.getElementById('btn-download').classList.add('hidden');
             } else {
-                btn.disabled = true; btn.className = "flex-1 bg-zinc-900 text-zinc-600 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
-                btn.innerText = activeV === 0 ? "CARREGUE VINHETA" : "ADD MÚSICAS";
+                btn.disabled = true; 
+                btn.className = "flex-1 bg-zinc-900 text-zinc-600 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
+                btn.innerText = !activeV ? "FALTA VINHETA" : "ADD MÚSICAS";
+                document.getElementById('btn-download').classList.add('hidden');
             }
-            
-            document.getElementById('btn-download').classList.toggle('hidden', !done || isProcessing);
             lucide.createIcons();
         }
 
-        window.remTrack = (id) => { 
-            if(playingId === id) { document.getElementById('preview-audio').pause(); playingId = null; }
-            tracks = tracks.filter(t => t.id !== id); updateState(); 
-        }
-
-        // --- PLAYER ---
-        const audioEl = document.getElementById('preview-audio');
-        window.togglePlay = (id) => {
-            const t = tracks.find(x => x.id === id);
-            if(playingId === id) { audioEl.pause(); playingId = null; } 
-            else { if(t.blob) { audioEl.src = URL.createObjectURL(t.blob); audioEl.play(); playingId = id; } }
-            updateState();
-        }
-        window.seekTrack = (id, val) => { if(playingId === id) audioEl.currentTime = val; }
-        window.jumpToMix = (id) => {
-            const t = tracks.find(x => x.id === id);
-            if(t && t.spot) {
-                if(playingId !== id) { audioEl.src = URL.createObjectURL(t.blob); playingId = id; }
-                audioEl.currentTime = Math.max(0, t.spot - 2); audioEl.play(); updateState();
-            }
-        }
-        setInterval(() => { if(playingId) updateState(); }, 1000);
-        audioEl.ontimeupdate = () => { if(playingId) { const t = tracks.find(x => x.id === playingId); t.currentTime = audioEl.currentTime; } };
-        audioEl.onended = () => { playingId = null; updateState(); };
-        audioEl.onloadedmetadata = () => { if(playingId) { const t = tracks.find(x => x.id === playingId); t.duration = audioEl.duration; } }
-
-        // --- ENGINE (SAFE SPOT) ---
-        function findSafeSpot(raw, sr, count, limit, vinhetaLen) {
-            const windowNeed = (vinhetaLen + 2) * sr; 
-            const limitSamples = limit > 0 ? (limit * sr) : raw.length;
-            const actLim = Math.min(limitSamples, raw.length - (60*sr)); 
-
-            if (actLim <= windowNeed) return [0];
-
-            const step = Math.floor(sr * 1);
-            let bestSpot = 5 * sr; 
-            let bestEnergy = Infinity;
-
-            for(let i = 5*sr; i < actLim - windowNeed; i += step) {
-                let sum = 0;
-                for(let k = 0; k < windowNeed; k+=500) {
-                    const idx = Math.floor(i + k);
-                    if(idx < raw.length) sum += Math.abs(raw[idx]);
-                }
-                const energy = sum / (windowNeed/500);
-                if(energy < bestEnergy) {
-                    bestEnergy = energy;
-                    bestSpot = i;
-                }
-            }
-            return [bestSpot / sr];
-        }
-
-        async function getSFX(type, sr) {
-            if (!audioCtx || type === 'none') return null;
-            const b = audioCtx.createBuffer(2, sr * 2, sr);
-            for(let c=0; c<2; c++) {
-                const d = b.getChannelData(c);
-                for(let i=0; i<d.length; i++) {
-                    const t = i/sr;
-                    if(type==='airhorn') d[i] = (Math.sin(t*400*6.28)>0?0.5:-0.5)*Math.max(0,1-t/1.5)*0.4;
-                    else if(type==='laser') d[i] = Math.sin(t*(800*Math.exp(-t*15))*6.28)*0.5;
-                    else if(type==='impact') d[i] = (Math.random()*0.2 + Math.sin(t*50*6.28)*0.8)*Math.exp(-t*4);
-                }
-            }
-            return b;
-        }
-
-        async function startMix() {
+        // --- CORE AUDIO ENGINE ---
+        async function startProcessing() {
             if(isProcessing) return;
-            isProcessing = true; updateState(); initAudio();
+            initAudio();
+            isProcessing = true; 
+            updateState();
 
-            const activeV = vinhetaSlots.filter(v=>v);
-            const mode = document.getElementById('sel-pos').value;
-            const mix = document.getElementById('sel-mix').value;
-            const sfxT = document.getElementById('sel-sfx').value;
+            // Pega a primeira vinheta válida (simplificado para este exemplo)
+            const vinheta = vinhetaSlots.find(v => v !== null);
+            if(!vinheta) { notify("Erro: Vinheta sumiu!", "error"); isProcessing=false; return; }
+
+            const posMode = document.getElementById('sel-pos').value;
+            const mixMode = document.getElementById('sel-mix').value;
 
             for(let i=0; i<tracks.length; i++) {
-                if(tracks[i].status !== 'done') {
-                    tracks[i].status = 'processing'; tracks[i].msg = 'Mixando...'; updateState();
-                    await new Promise(r=>setTimeout(r,20));
+                if(tracks[i].status === 'done') continue;
 
-                    try {
-                        const ab = await tracks[i].file.arrayBuffer();
-                        const mb = await audioCtx.decodeAudioData(ab);
-                        
-                        let spots = [0];
-                        if(mode === 'intro') spots = [15];
-                        else if(mode === 'start') spots = [0];
-                        else {
-                            let lim = mode==='smart30'?30 : 0;
-                            spots = findSafeSpot(mb.getChannelData(0), mb.sampleRate, activeV.length, lim, activeV[0].duration);
-                        }
+                tracks[i].status = 'processing'; 
+                tracks[i].msg = 'Decodificando...';
+                updateState();
 
-                        const sBuf = await getSFX(sfxT, mb.sampleRate);
-                        const sDur = sBuf ? 1.5 : 0;
+                // Pequeno delay para a UI atualizar
+                await new Promise(r => setTimeout(r, 50));
 
-                        const off = new OfflineAudioContext(2, mb.length, mb.sampleRate);
-                        const ms = off.createBufferSource(); ms.buffer = mb;
-                        const mg = off.createGain();
-                        
-                        mg.gain.setValueAtTime(1,0);
-                        spots.forEach((st, idx) => {
-                            if(idx >= activeV.length) return;
-                            const dur = activeV[idx].duration + sDur;
-                            if(mix==='ducking') {
-                                mg.gain.setValueAtTime(1, st);
-                                mg.gain.linearRampToValueAtTime(0.3, st+0.3);
-                                mg.gain.setValueAtTime(0.3, st+dur-0.3);
-                                mg.gain.linearRampToValueAtTime(1, st+dur);
-                            } else if(mix==='cut') {
-                                mg.gain.setValueAtTime(1, st);
-                                mg.gain.linearRampToValueAtTime(0, st+0.05);
-                                mg.gain.setValueAtTime(0, st+dur-0.05);
-                                mg.gain.linearRampToValueAtTime(1, st+dur);
-                            }
-                        });
-                        ms.connect(mg); mg.connect(off.destination); ms.start(0);
+                try {
+                    // 1. Decode Track
+                    const ab = await tracks[i].file.arrayBuffer();
+                    const trackBuffer = await audioCtx.decodeAudioData(ab);
 
-                        spots.forEach((st, idx) => {
-                            if(idx >= activeV.length) return;
-                            if(sBuf) {
-                                const ss = off.createBufferSource(); ss.buffer = sBuf;
-                                const sg = off.createGain(); sg.gain.value = 0.7;
-                                ss.connect(sg); sg.connect(off.destination); ss.start(st);
-                            }
-                            const vs = off.createBufferSource(); vs.buffer = activeV[idx].buffer;
-                            const vg = off.createGain(); vg.gain.value = mix==='overlay'?1.3:1.1;
-                            vs.connect(vg); vg.connect(off.destination); 
-                            vs.start(st + (sBuf?0.5:0));
-                        });
+                    // 2. Calculate Position
+                    let startTime = 0;
+                    const vDur = vinheta.duration;
+                    const tDur = trackBuffer.duration;
 
-                        const ren = await off.startRendering();
-                        tracks[i].blob = bufferToWave(ren);
-                        tracks[i].status = 'done';
-                        tracks[i].spot = spots[0];
-                        tracks[i].msg = 'Sucesso';
-                        tracks[i].duration = mb.duration;
-                        
-                        // CLEAR MEMORY
-                        tracks[i].file = null; 
-
-                    } catch(e) {
-                        tracks[i].status = 'error'; tracks[i].msg = 'Erro';
+                    if (posMode === 'safeEnd') {
+                        // 15 segundos antes do fim ou onde der
+                        startTime = Math.max(0, tDur - vDur - 15);
+                    } else if (posMode === 'intro') {
+                        startTime = Math.min(15, tDur / 2); // 15s ou meio se for curta
+                    } else if (posMode === 'middle') {
+                        startTime = (tDur / 2) - (vDur / 2);
+                    } else {
+                        startTime = 0; // Start
                     }
+
+                    // 3. Render Offline
+                    const offlineCtx = new OfflineAudioContext(2, trackBuffer.length, trackBuffer.sampleRate);
+                    
+                    // -- Track Source
+                    const musicSrc = offlineCtx.createBufferSource();
+                    musicSrc.buffer = trackBuffer;
+                    
+                    // -- Vinheta Source
+                    const vinhetaSrc = offlineCtx.createBufferSource();
+                    vinhetaSrc.buffer = vinheta.buffer;
+
+                    // -- Gain Nodes (Volume)
+                    const musicGain = offlineCtx.createGain();
+                    const vinhetaGain = offlineCtx.createGain();
+
+                    // Lógica de Volume (Mixagem)
+                    if (mixMode === 'ducking') {
+                        // Baixa a música quando a vinheta entra
+                        musicGain.gain.setValueAtTime(1, startTime);
+                        musicGain.gain.linearRampToValueAtTime(0.3, startTime + 0.2);
+                        musicGain.gain.setValueAtTime(0.3, startTime + vDur - 0.2);
+                        musicGain.gain.linearRampToValueAtTime(1, startTime + vDur);
+                        vinhetaGain.gain.value = 1.0;
+                    } else if (mixMode === 'cut') {
+                        // Corta a música totalmente
+                        musicGain.gain.setValueAtTime(1, startTime);
+                        musicGain.gain.linearRampToValueAtTime(0, startTime + 0.05);
+                        musicGain.gain.setValueAtTime(0, startTime + vDur - 0.05);
+                        musicGain.gain.linearRampToValueAtTime(1, startTime + vDur);
+                        vinhetaGain.gain.value = 1.0;
+                    } else {
+                        // Overlay (Por cima)
+                        musicGain.gain.value = 1.0; // Mantém original
+                        vinhetaGain.gain.value = 1.2; // Vinheta um pouco mais alta
+                    }
+
+                    // Conexões
+                    musicSrc.connect(musicGain);
+                    musicGain.connect(offlineCtx.destination);
+                    
+                    vinhetaSrc.connect(vinhetaGain);
+                    vinhetaGain.connect(offlineCtx.destination);
+
+                    // Start
+                    musicSrc.start(0);
+                    vinhetaSrc.start(startTime);
+
+                    // Render
+                    tracks[i].msg = 'Renderizando...'; updateState();
+                    const renderedBuffer = await offlineCtx.startRendering();
+
+                    // 4. Encode to WAV Blob (Critical Step)
+                    tracks[i].msg = 'Salvando...'; updateState();
+                    tracks[i].blob = bufferToWave(renderedBuffer, renderedBuffer.length);
+                    tracks[i].status = 'done';
+                    tracks[i].msg = 'Mixado';
+
+                    // Limpa memória
+                    tracks[i].file = null; // Remove referência ao arquivo original para economizar RAM
+
+                } catch(e) {
+                    console.error(e);
+                    tracks[i].status = 'error';
+                    tracks[i].msg = 'Falha ao processar';
                 }
             }
-            isProcessing = false; updateState(); notify("Pronto!");
+
+            isProcessing = false;
+            updateState();
+            if(tracks.every(t => t.status === 'done')) {
+                notify("Mixagem concluída! Baixe o ZIP.", "success");
+            }
         }
 
-        function bufferToWave(abuffer) {
-            let numOfChan = abuffer.numberOfChannels, length = abuffer.length * numOfChan * 2 + 44, buffer = new ArrayBuffer(length), view = new DataView(buffer), channels = [], i, sample, offset = 0, pos = 0;
+        // --- WAV ENCODER (BINARY PERFECT) ---
+        function bufferToWave(abuffer, len) {
+            let numOfChan = abuffer.numberOfChannels,
+                length = len * numOfChan * 2 + 44,
+                buffer = new ArrayBuffer(length),
+                view = new DataView(buffer),
+                channels = [], i, sample,
+                offset = 0,
+                pos = 0;
+
+            // Header helper
             function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
             function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
-            setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157); setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan); setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan); setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164); setUint32(length - pos - 4);
-            for(i=0; i<numOfChan; i++) channels.push(abuffer.getChannelData(i));
-            while(pos < abuffer.length) {
-                for(i=0; i<numOfChan; i++) { sample = Math.max(-1, Math.min(1, channels[i][pos])); sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767)|0; view.setInt16(44 + offset, sample, true); offset += 2; } pos++;
+
+            // WAV Header
+            setUint32(0x46464952); // "RIFF"
+            setUint32(length - 8); // file length - 8
+            setUint32(0x45564157); // "WAVE"
+
+            setUint32(0x20746d66); // "fmt " chunk
+            setUint32(16); // length = 16
+            setUint16(1); // PCM (uncompressed)
+            setUint16(numOfChan);
+            setUint32(abuffer.sampleRate);
+            setUint32(abuffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
+            setUint16(numOfChan * 2); // block-align
+            setUint16(16); // 16-bit (hardcoded)
+
+            setUint32(0x61746164); // "data" - chunk
+            setUint32(length - pos - 4); // chunk length
+
+            // Interleave channels
+            for(i = 0; i < numOfChan; i++) channels.push(abuffer.getChannelData(i));
+
+            while(pos < length) {
+                for(i = 0; i < numOfChan; i++) {
+                    // Clamp and convert float to 16-bit PCM
+                    sample = Math.max(-1, Math.min(1, channels[i][offset])); 
+                    // Bit shifting 0 is a fast floor
+                    sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0; 
+                    view.setInt16(pos, sample, true); 
+                    pos += 2;
+                }
+                offset++;
             }
+
             return new Blob([buffer], { type: "audio/wav" });
         }
 
-        window.downloadZip = async () => { 
-            const z = new JSZip(); let c = 0;
+        // --- DOWNLOAD ZIP ---
+        async function downloadZip() {
             const btn = document.getElementById('btn-download');
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> ZIPANDO...`;
-            lucide.createIcons();
+            const originalText = btn.innerHTML;
             
-            tracks.forEach((t, idx) => { 
-                if (t.status === 'done' && t.blob) { 
-                    let n = `Faixa_${idx+1}.wav`;
-                    z.file(n, t.blob); 
-                    c++; 
-                } 
-            }); 
-            if(c>0) {
-                try {
-                    const b = await z.generateAsync({type:"blob", compression:"STORE"}, (meta) => {
-                       btn.innerText = `${meta.percent.toFixed(0)}%`;
-                    }); 
-                    const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "SuitCds_Master.zip"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                    btn.innerHTML = `<i data-lucide="download" class="w-4 h-4"></i> ZIP`;
-                    lucide.createIcons();
-                } catch(e) { notify("Erro memória", "error"); btn.innerText = "ERRO"; }
-            } else notify("Nada para baixar", "error");
-        };
+            try {
+                btn.disabled = true;
+                btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> COMPRIMINDO...`;
+                lucide.createIcons();
+
+                const zip = new JSZip();
+                let count = 0;
+
+                // Pasta dentro do ZIP para organização
+                const folder = zip.folder("SuitCds_Mixes");
+
+                tracks.forEach((t, idx) => {
+                    if (t.status === 'done' && t.blob) {
+                        // Limpa nome do arquivo
+                        let safeName = t.originalName.replace(/\.[^/.]+$/, ""); // Remove extensão
+                        // Nome final: 01 - NomeOriginal (Mixed).wav
+                        let fileName = `${String(idx+1).padStart(2, '0')} - ${safeName} (SuitCds).wav`;
+                        folder.file(fileName, t.blob);
+                        count++;
+                    }
+                });
+
+                if(count === 0) {
+                    notify("Nenhuma música pronta para baixar.", "error");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    return;
+                }
+
+                // Gera o ZIP
+                const content = await zip.generateAsync({
+                    type: "blob", 
+                    compression: "DEFLATE", 
+                    compressionOptions: { level: 6 } 
+                }, (metadata) => {
+                    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> ${metadata.percent.toFixed(0)}%`;
+                });
+
+                // Download Trigger
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(content);
+                a.download = "SuitCds_Pack_Completo.zip";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                notify("Download iniciado!", "success");
+
+            } catch(e) {
+                console.error(e);
+                notify("Erro ao criar ZIP", "error");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+        }
     </script>
 </body>
 </html>
-
 
