@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SuitCds V27 ZIP Rescue</title>
+    <title>SuitCds V28 Universal</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -39,9 +39,9 @@
 
         /* EFEITO DE VIDRO (GLASSMORPHISM) */
         .glass { 
-            background: rgba(20, 20, 25, 0.8); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px); 
+            background: rgba(20, 20, 25, 0.85); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
             border: 1px solid rgba(255,255,255,0.08);
         }
         .card {
@@ -88,15 +88,15 @@
         <div class="max-w-xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-800 text-white rounded-xl flex items-center justify-center shadow-lg shadow-green-900/40">
-                    <i data-lucide="folder-archive" class="w-5 h-5 fill-current"></i>
+                    <i data-lucide="folder-open" class="w-5 h-5 fill-current"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-tight text-white leading-tight">SuitCds</h1>
-                    <p class="text-[10px] text-zinc-500 font-bold tracking-[0.2em] uppercase">ZIP Rescue V27</p>
+                    <p class="text-[10px] text-zinc-500 font-bold tracking-[0.2em] uppercase">V28 UNIVERSAL</p>
                 </div>
             </div>
             <div class="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-500">
-                BETA
+                PRO
             </div>
         </div>
     </header>
@@ -110,20 +110,21 @@
                     <span class="w-4 h-4 rounded bg-zinc-800 text-white flex items-center justify-center text-[10px]">1</span> 
                     Carregar Vinhetas
                 </h2>
-                <span id="slot-counter" class="text-[10px] text-zinc-600 font-mono bg-zinc-900 px-2 py-0.5 rounded">0/4</span>
+                <span id="slot-counter" class="text-[10px] text-zinc-600 font-mono bg-zinc-900 px-2 py-0.5 rounded">0/2</span>
             </div>
             
             <div class="grid grid-cols-2 gap-3">
                 <!-- SLOT 1 -->
                 <div class="card h-24 flex flex-col items-center justify-center gap-2 group" id="slot-1">
-                    <input type="file" class="phantom-input" accept="audio/*" onchange="loadVinheta(0, this)">
+                    <!-- CHANGE: accept="*" to allow all files -->
+                    <input type="file" class="phantom-input" accept="*" onchange="loadVinheta(0, this)">
                     <div id="icon-1" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 group-hover:border-green-500/50 transition-colors">1</div>
                     <span id="name-1" class="text-[11px] font-medium text-zinc-400 truncate w-full px-3 text-center">Toque para adicionar</span>
                     <button onclick="clearVinheta(0, event)" id="btn-clr-1" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-red-400 z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
                 </div>
                 <!-- SLOT 2 -->
                 <div class="card h-24 flex flex-col items-center justify-center gap-2 group" id="slot-2">
-                    <input type="file" class="phantom-input" accept="audio/*" onchange="loadVinheta(1, this)">
+                    <input type="file" class="phantom-input" accept="*" onchange="loadVinheta(1, this)">
                     <div id="icon-2" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 group-hover:border-green-500/50 transition-colors">2</div>
                     <span id="name-2" class="text-[11px] font-medium text-zinc-400 truncate w-full px-3 text-center">Toque para adicionar</span>
                     <button onclick="clearVinheta(1, event)" id="btn-clr-2" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-red-400 z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
@@ -174,15 +175,17 @@
             </div>
 
             <div class="flex gap-3 mb-4">
-                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-zinc-800 cursor-pointer relative overflow-hidden">
-                    <input type="file" class="phantom-input" id="inp-music" multiple accept="audio/*">
+                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-zinc-800 cursor-pointer relative overflow-hidden hover:border-zinc-600 transition-colors">
+                    <!-- CHANGE: accept="*" -->
+                    <input type="file" class="phantom-input" id="inp-music" multiple accept="*">
                     <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
                         <i data-lucide="music" class="w-4 h-4 text-green-400"></i>
                     </div>
                     <span class="text-[10px] font-bold text-zinc-300">ARQUIVOS</span>
                 </div>
-                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-zinc-800 cursor-pointer relative overflow-hidden">
-                    <input type="file" class="phantom-input" id="inp-zip" accept=".zip">
+                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-zinc-800 cursor-pointer relative overflow-hidden hover:border-zinc-600 transition-colors">
+                    <!-- CHANGE: accept="*" -->
+                    <input type="file" class="phantom-input" id="inp-zip" accept="*">
                     <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
                         <i data-lucide="archive" class="w-4 h-4 text-emerald-400"></i>
                     </div>
@@ -197,10 +200,10 @@
             
             <div id="empty-msg" class="text-center py-12 border border-dashed border-zinc-800 rounded-2xl">
                 <div class="w-12 h-12 rounded-full bg-zinc-900 mx-auto flex items-center justify-center mb-3">
-                    <i data-lucide="disc" class="w-5 h-5 text-zinc-600"></i>
+                    <i data-lucide="folder-search" class="w-5 h-5 text-zinc-600"></i>
                 </div>
                 <p class="text-xs text-zinc-500 font-medium">Lista vazia (Max 50)</p>
-                <p class="text-[10px] text-zinc-600 mt-1">MP3, WAV, M4A suportados</p>
+                <p class="text-[10px] text-zinc-600 mt-1">Aceita todos os arquivos</p>
             </div>
         </section>
 
@@ -240,7 +243,7 @@
 
         // --- VARIÁVEIS GLOBAIS ---
         let audioCtx;
-        let vinhetaSlots = [null, null]; // Apenas 2 slots para simplificar a UI mobile, mas expansível
+        let vinhetaSlots = [null, null]; // Apenas 2 slots para simplificar a UI mobile
         let tracks = [];
         let isProcessing = false;
         let playingId = null;
@@ -248,12 +251,15 @@
 
         lucide.createIcons();
 
-        // Inicializa AudioContext no primeiro clique
+        // Inicializa AudioContext
         function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }
-        ['click','touchstart'].forEach(e => document.addEventListener(e, initAudio, {passive:true, once:true}));
+        // Ativar audio context em qualquer clique
+        document.body.addEventListener('click', () => initAudio(), {once:true});
 
         function notify(msg, type='info') {
             const t = document.getElementById('toast');
@@ -261,13 +267,6 @@
             t.style.color = type === 'error' ? '#ef4444' : '#000';
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
-        }
-
-        function formatTime(sec) {
-            if(!sec || isNaN(sec)) return "0:00";
-            const m = Math.floor(sec / 60);
-            const s = Math.floor(sec % 60);
-            return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
         // --- CARREGAMENTO DE VINHETAS ---
@@ -278,9 +277,10 @@
             
             const nameEl = document.getElementById(`name-${idx+1}`);
             const iconEl = document.getElementById(`icon-${idx+1}`);
-            nameEl.innerText = "Decodificando...";
+            nameEl.innerText = "Lendo...";
             
             try {
+                // Tenta decodificar qualquer coisa
                 const ab = await file.arrayBuffer();
                 const buf = await audioCtx.decodeAudioData(ab);
                 
@@ -296,8 +296,8 @@
                 lucide.createIcons();
                 updateState();
             } catch(e) {
-                notify("Erro no áudio. Tente outro arquivo.", "error");
-                nameEl.innerText = "Erro";
+                notify("Arquivo inválido (não é áudio)", "error");
+                nameEl.innerText = "Erro - Tente outro";
                 console.error(e);
             }
             input.value = ''; 
@@ -320,7 +320,7 @@
         // --- CARREGAMENTO DE MÚSICAS ---
         function checkLimit(addCount) {
             if(tracks.length + addCount > MAX_TRACKS) {
-                notify(`Limite de ${MAX_TRACKS} músicas atingido!`, "error");
+                notify(`Limite de ${MAX_TRACKS} arquivos!`, "error");
                 return false;
             }
             return true;
@@ -329,7 +329,10 @@
         document.getElementById('inp-music').onchange = function() {
             if(this.files.length) {
                 if(!checkLimit(this.files.length)) return;
+                
+                let addedCount = 0;
                 Array.from(this.files).forEach(f => {
+                    // Aceita tudo, filtra na hora de processar
                     tracks.push({ 
                         id: Math.random().toString(36).slice(2), 
                         file: f, 
@@ -338,8 +341,9 @@
                         blob: null,
                         originalName: f.name 
                     });
+                    addedCount++;
                 });
-                notify(`${this.files.length} adicionadas`);
+                notify(`${addedCount} arquivos adicionados`);
                 updateState();
             }
             this.value = '';
@@ -349,26 +353,32 @@
         document.getElementById('inp-zip').onchange = async function() {
             const f = this.files[0];
             if(!f) return;
-            notify("Lendo ZIP... aguarde");
+            notify("Abrindo arquivo...");
+            
             try {
                 const z = new JSZip();
+                // Tenta carregar qualquer arquivo como ZIP
                 const c = await z.loadAsync(f);
                 let count = 0;
                 let pending = [];
                 
-                const validExt = ['.mp3', '.wav', '.m4a', '.mp4', '.aac', '.flac', '.ogg'];
+                // Extensões para tentar salvar do ZIP
+                const validExt = ['.mp3', '.wav', '.m4a', '.mp4', '.aac', '.flac', '.ogg', '.wma'];
 
                 for(let k of Object.keys(c.files)) {
                     const entry = c.files[k];
                     const nameLower = entry.name.toLowerCase();
-                    // Ignora lixo do macOS e pastas
-                    if(!entry.dir && !nameLower.includes('__macosx') && !nameLower.split('/').pop().startsWith('.') && validExt.some(ext => nameLower.endsWith(ext))) {
-                        pending.push(entry);
+                    
+                    if(!entry.dir && !nameLower.includes('__macosx') && !nameLower.split('/').pop().startsWith('.')) {
+                        // Verifica se parece audio
+                        if(validExt.some(ext => nameLower.endsWith(ext))) {
+                            pending.push(entry);
+                        }
                     }
                 }
 
                 if(pending.length === 0) {
-                    notify("Nenhum áudio válido encontrado no ZIP", "error");
+                    notify("ZIP sem áudio válido", "error");
                     return;
                 }
 
@@ -376,7 +386,7 @@
 
                 for(let entry of pending) {
                     const b = await entry.async("blob");
-                    const cleanName = entry.name.split('/').pop(); // Remove pastas do nome
+                    const cleanName = entry.name.split('/').pop(); 
                     tracks.push({ 
                         id: Math.random().toString(36).slice(2), 
                         file: new File([b], cleanName, { type: "audio/mpeg" }), 
@@ -391,7 +401,7 @@
                 updateState();
             } catch(e) { 
                 console.error(e); 
-                notify("Arquivo ZIP inválido ou corrompido", "error"); 
+                notify("Não é um ZIP válido", "error"); 
             }
             this.value = '';
         };
@@ -428,7 +438,7 @@
             const list = document.getElementById('list-container');
             const empty = document.getElementById('empty-msg');
             const btn = document.getElementById('btn-process');
-            const activeV = vinhetaSlots.some(v=>v !== null); // Pelo menos uma vinheta
+            const activeV = vinhetaSlots.some(v=>v !== null); 
             
             document.getElementById('slot-counter').innerText = `${vinhetaSlots.filter(x=>x).length}/2`;
             document.getElementById('track-counter').innerText = `${tracks.length}/${MAX_TRACKS}`;
@@ -441,9 +451,9 @@
                     let statusIcon = '';
                     
                     if(t.status === 'done') statusIcon = `<i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>`;
-                    else if(t.status === 'error') statusIcon = `<i data-lucide="alert-circle" class="w-4 h-4 text-red-500"></i>`;
+                    else if(t.status === 'error') statusIcon = `<i data-lucide="alert-triangle" class="w-4 h-4 text-red-500"></i>`;
                     else if(t.status === 'processing') statusIcon = `<i data-lucide="loader-2" class="w-4 h-4 text-yellow-500 spin"></i>`;
-                    else statusIcon = `<i data-lucide="music" class="w-4 h-4 text-zinc-600"></i>`;
+                    else statusIcon = `<i data-lucide="file-audio" class="w-4 h-4 text-zinc-600"></i>`;
 
                     let action = '';
                     if(t.status === 'done') {
@@ -453,6 +463,8 @@
                         </button>`;
                     }
 
+                    let textColor = t.status === 'error' ? 'text-red-400' : 'text-zinc-500';
+
                     return `
                     <div class="card p-3 flex items-center justify-between group">
                         <div class="flex items-center gap-3 overflow-hidden flex-1">
@@ -461,7 +473,7 @@
                             </div>
                             <div class="min-w-0">
                                 <div class="text-xs text-white truncate font-medium">${t.originalName}</div>
-                                <div class="text-[10px] text-zinc-500 flex items-center gap-1">
+                                <div class="text-[10px] ${textColor} flex items-center gap-1">
                                     ${t.msg}
                                 </div>
                             </div>
@@ -478,7 +490,8 @@
             }
 
             const canProcess = activeV && tracks.length > 0;
-            const allDone = tracks.length > 0 && tracks.every(t => t.status === 'done');
+            const allDone = tracks.length > 0 && tracks.every(t => t.status === 'done' || t.status === 'error');
+            const hasSuccess = tracks.some(t => t.status === 'done');
             
             if(isProcessing) {
                 btn.disabled = true; 
@@ -486,9 +499,9 @@
                 btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> PROCESSANDO...`;
             } else if(allDone) {
                 btn.className = "flex-1 bg-zinc-900 text-zinc-500 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
-                btn.innerText = "PROCESSAMENTO CONCLUÍDO";
+                btn.innerText = "FINALIZADO";
                 btn.disabled = true;
-                document.getElementById('btn-download').classList.remove('hidden');
+                if(hasSuccess) document.getElementById('btn-download').classList.remove('hidden');
             } else if(canProcess) {
                 btn.disabled = false; 
                 btn.className = "flex-1 bg-green-600 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(34,197,94,0.3)] active:scale-95 transition-all";
@@ -510,7 +523,7 @@
             isProcessing = true; 
             updateState();
 
-            // Pega a primeira vinheta válida (simplificado para este exemplo)
+            // Pega a primeira vinheta válida (simplificado)
             const vinheta = vinhetaSlots.find(v => v !== null);
             if(!vinheta) { notify("Erro: Vinheta sumiu!", "error"); isProcessing=false; return; }
 
@@ -518,19 +531,23 @@
             const mixMode = document.getElementById('sel-mix').value;
 
             for(let i=0; i<tracks.length; i++) {
-                if(tracks[i].status === 'done') continue;
+                if(tracks[i].status === 'done' || tracks[i].status === 'error') continue;
 
                 tracks[i].status = 'processing'; 
-                tracks[i].msg = 'Decodificando...';
+                tracks[i].msg = 'Lendo...';
                 updateState();
 
-                // Pequeno delay para a UI atualizar
-                await new Promise(r => setTimeout(r, 50));
+                await new Promise(r => setTimeout(r, 50)); // UI Breath
 
                 try {
-                    // 1. Decode Track
+                    // 1. Tenta Decodificar (Aqui pega erro se for PDF/Img)
                     const ab = await tracks[i].file.arrayBuffer();
-                    const trackBuffer = await audioCtx.decodeAudioData(ab);
+                    let trackBuffer;
+                    try {
+                        trackBuffer = await audioCtx.decodeAudioData(ab);
+                    } catch(decodeErr) {
+                        throw new Error("Arquivo não é áudio suportado");
+                    }
 
                     // 2. Calculate Position
                     let startTime = 0;
@@ -538,91 +555,82 @@
                     const tDur = trackBuffer.duration;
 
                     if (posMode === 'safeEnd') {
-                        // 15 segundos antes do fim ou onde der
                         startTime = Math.max(0, tDur - vDur - 15);
                     } else if (posMode === 'intro') {
-                        startTime = Math.min(15, tDur / 2); // 15s ou meio se for curta
+                        startTime = Math.min(15, tDur / 2); 
                     } else if (posMode === 'middle') {
                         startTime = (tDur / 2) - (vDur / 2);
                     } else {
-                        startTime = 0; // Start
+                        startTime = 0; 
                     }
 
                     // 3. Render Offline
                     const offlineCtx = new OfflineAudioContext(2, trackBuffer.length, trackBuffer.sampleRate);
                     
-                    // -- Track Source
                     const musicSrc = offlineCtx.createBufferSource();
                     musicSrc.buffer = trackBuffer;
                     
-                    // -- Vinheta Source
                     const vinhetaSrc = offlineCtx.createBufferSource();
                     vinhetaSrc.buffer = vinheta.buffer;
 
-                    // -- Gain Nodes (Volume)
                     const musicGain = offlineCtx.createGain();
                     const vinhetaGain = offlineCtx.createGain();
 
-                    // Lógica de Volume (Mixagem)
+                    // Lógica de Mixagem
                     if (mixMode === 'ducking') {
-                        // Baixa a música quando a vinheta entra
                         musicGain.gain.setValueAtTime(1, startTime);
                         musicGain.gain.linearRampToValueAtTime(0.3, startTime + 0.2);
                         musicGain.gain.setValueAtTime(0.3, startTime + vDur - 0.2);
                         musicGain.gain.linearRampToValueAtTime(1, startTime + vDur);
                         vinhetaGain.gain.value = 1.0;
                     } else if (mixMode === 'cut') {
-                        // Corta a música totalmente
                         musicGain.gain.setValueAtTime(1, startTime);
                         musicGain.gain.linearRampToValueAtTime(0, startTime + 0.05);
                         musicGain.gain.setValueAtTime(0, startTime + vDur - 0.05);
                         musicGain.gain.linearRampToValueAtTime(1, startTime + vDur);
                         vinhetaGain.gain.value = 1.0;
                     } else {
-                        // Overlay (Por cima)
-                        musicGain.gain.value = 1.0; // Mantém original
-                        vinhetaGain.gain.value = 1.2; // Vinheta um pouco mais alta
+                        musicGain.gain.value = 1.0;
+                        vinhetaGain.gain.value = 1.2;
                     }
 
-                    // Conexões
                     musicSrc.connect(musicGain);
                     musicGain.connect(offlineCtx.destination);
                     
                     vinhetaSrc.connect(vinhetaGain);
                     vinhetaGain.connect(offlineCtx.destination);
 
-                    // Start
                     musicSrc.start(0);
                     vinhetaSrc.start(startTime);
 
-                    // Render
-                    tracks[i].msg = 'Renderizando...'; updateState();
+                    tracks[i].msg = 'Mixando...'; updateState();
                     const renderedBuffer = await offlineCtx.startRendering();
 
-                    // 4. Encode to WAV Blob (Critical Step)
                     tracks[i].msg = 'Salvando...'; updateState();
                     tracks[i].blob = bufferToWave(renderedBuffer, renderedBuffer.length);
                     tracks[i].status = 'done';
                     tracks[i].msg = 'Mixado';
 
-                    // Limpa memória
-                    tracks[i].file = null; // Remove referência ao arquivo original para economizar RAM
+                    tracks[i].file = null; // Clean RAM
 
                 } catch(e) {
-                    console.error(e);
+                    console.log("Erro no arquivo:", tracks[i].originalName);
                     tracks[i].status = 'error';
-                    tracks[i].msg = 'Falha ao processar';
+                    tracks[i].msg = 'Arquivo inválido';
                 }
             }
 
             isProcessing = false;
             updateState();
-            if(tracks.every(t => t.status === 'done')) {
-                notify("Mixagem concluída! Baixe o ZIP.", "success");
+            
+            if(tracks.some(t => t.status === 'done')) {
+                notify("Concluído! Verifique a lista.", "success");
+            } else {
+                notify("Nenhum áudio foi processado.", "error");
             }
         }
 
-        // --- WAV ENCODER (BINARY PERFECT) ---
+        // --- WAV ENCODER ---
         function bufferToWave(abuffer, len) {
             let numOfChan = abuffer.numberOfChannels,
                 length = len * numOfChan * 2 + 44,
@@ -632,35 +640,30 @@
                 offset = 0,
                 pos = 0;
 
-            // Header helper
             function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
             function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
 
-            // WAV Header
             setUint32(0x46464952); // "RIFF"
-            setUint32(length - 8); // file length - 8
+            setUint32(length - 8); 
             setUint32(0x45564157); // "WAVE"
 
-            setUint32(0x20746d66); // "fmt " chunk
-            setUint32(16); // length = 16
-            setUint16(1); // PCM (uncompressed)
+            setUint32(0x20746d66); // "fmt "
+            setUint32(16); 
+            setUint16(1); 
             setUint16(numOfChan);
             setUint32(abuffer.sampleRate);
-            setUint32(abuffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
-            setUint16(numOfChan * 2); // block-align
-            setUint16(16); // 16-bit (hardcoded)
+            setUint32(abuffer.sampleRate * 2 * numOfChan); 
+            setUint16(numOfChan * 2); 
+            setUint16(16); 
 
-            setUint32(0x61746164); // "data" - chunk
-            setUint32(length - pos - 4); // chunk length
+            setUint32(0x61746164); // "data"
+            setUint32(length - pos - 4); 
 
-            // Interleave channels
             for(i = 0; i < numOfChan; i++) channels.push(abuffer.getChannelData(i));
 
             while(pos < length) {
                 for(i = 0; i < numOfChan; i++) {
-                    // Clamp and convert float to 16-bit PCM
                     sample = Math.max(-1, Math.min(1, channels[i][offset])); 
-                    // Bit shifting 0 is a fast floor
                     sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0; 
                     view.setInt16(pos, sample, true); 
                     pos += 2;
@@ -682,16 +685,12 @@
                 lucide.createIcons();
 
                 const zip = new JSZip();
-                let count = 0;
-
-                // Pasta dentro do ZIP para organização
                 const folder = zip.folder("SuitCds_Mixes");
+                let count = 0;
 
                 tracks.forEach((t, idx) => {
                     if (t.status === 'done' && t.blob) {
-                        // Limpa nome do arquivo
-                        let safeName = t.originalName.replace(/\.[^/.]+$/, ""); // Remove extensão
-                        // Nome final: 01 - NomeOriginal (Mixed).wav
+                        let safeName = t.originalName.replace(/\.[^/.]+$/, "");
                         let fileName = `${String(idx+1).padStart(2, '0')} - ${safeName} (SuitCds).wav`;
                         folder.file(fileName, t.blob);
                         count++;
@@ -699,13 +698,10 @@
                 });
 
                 if(count === 0) {
-                    notify("Nenhuma música pronta para baixar.", "error");
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
+                    notify("Nada para baixar.", "error");
                     return;
                 }
 
-                // Gera o ZIP
                 const content = await zip.generateAsync({
                     type: "blob", 
                     compression: "DEFLATE", 
@@ -714,15 +710,12 @@
                     btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> ${metadata.percent.toFixed(0)}%`;
                 });
 
-                // Download Trigger
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(content);
-                a.download = "SuitCds_Pack_Completo.zip";
+                a.download = "SuitCds_Pack_Universal.zip";
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-
-                notify("Download iniciado!", "success");
 
             } catch(e) {
                 console.error(e);
