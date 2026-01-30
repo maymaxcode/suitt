@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SuitCds V29 Pro</title>
+    <title>SuitCds V30 Blue</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,50 +15,50 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
-        /* BASE & THEME */
+        /* BASE & THEME BLUE */
         body { 
-            background-color: #050505; 
-            color: #e4e4e7; 
+            background-color: #020617; /* Slate 950 */
+            color: #e2e8f0; 
             -webkit-tap-highlight-color: transparent;
             font-family: 'Inter', system-ui, sans-serif;
             overflow-x: hidden;
         }
 
-        /* NEVE */
-        .snowflake {
-            position: fixed; top: -10px; background: rgba(255,255,255,0.2);
+        /* ANIMAÇÃO DE FUNDO (Partículas Azuis) */
+        .particle {
+            position: fixed; top: -10px; background: rgba(56, 189, 248, 0.15); /* Sky Blue */
             border-radius: 50%; pointer-events: none; z-index: 0; animation: fall linear infinite;
         }
         @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* INPUT FANTASMA */
+        /* INPUT INVISÍVEL */
         .phantom-input {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0; z-index: 20; cursor: pointer;
         }
 
-        /* GLASS STYLE */
+        /* GLASS STYLE BLUE */
         .glass { 
-            background: rgba(20, 20, 25, 0.85); 
+            background: rgba(15, 23, 42, 0.85); /* Slate 900 */
             backdrop-filter: blur(16px); 
             -webkit-backdrop-filter: blur(16px); 
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(56, 189, 248, 0.08);
         }
         .card {
             @apply glass; border-radius: 16px; position: relative; z-index: 10; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .card:active { transform: scale(0.98); background: rgba(40, 40, 45, 0.9); }
+        .card:active { transform: scale(0.98); background: rgba(30, 41, 59, 0.9); }
         
-        .slot-filled { border-color: #22c55e; background: rgba(34, 197, 94, 0.05); }
+        .slot-filled { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
         
-        /* PLAYER SLIDER */
+        /* PLAYER SLIDER BLUE */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
-            background: #fff; cursor: pointer; margin-top: -5px; box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            background: #fff; cursor: pointer; margin-top: -5px; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
         }
         input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 2px; cursor: pointer; background: #3f3f46; border-radius: 2px;
+            width: 100%; height: 2px; cursor: pointer; background: #1e293b; border-radius: 2px;
         }
         
         .spin { animation: spin 1s linear infinite; }
@@ -67,7 +67,7 @@
         /* TOAST */
         .toast {
             position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
-            background: #fff; color: #000; padding: 12px 24px; border-radius: 50px;
+            background: #fff; color: #0f172a; padding: 12px 24px; border-radius: 50px;
             font-weight: 700; font-size: 13px; opacity: 0; pointer-events: none;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100;
             display: flex; align-items: center; gap: 8px; width: max-content;
@@ -76,26 +76,26 @@
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
-<body class="min-h-screen pb-44 selection:bg-green-500/30">
+<body class="min-h-screen pb-44 selection:bg-blue-500/30">
 
     <audio id="preview-audio" playsinline webkit-playsinline></audio>
 
     <div id="toast"><i data-lucide="info" class="w-4 h-4"></i> <span id="toast-msg">Info</span></div>
 
     <!-- HEADER -->
-    <header class="pt-8 pb-6 px-6 border-b border-white/5 bg-black/60 backdrop-blur-md sticky top-0 z-40">
+    <header class="pt-8 pb-6 px-6 border-b border-white/5 bg-[#020617]/80 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-800 text-white rounded-xl flex items-center justify-center shadow-lg shadow-green-900/40">
-                    <i data-lucide="music-2" class="w-5 h-5 fill-current"></i>
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
+                    <i data-lucide="waves" class="w-5 h-5 fill-current"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-tight text-white leading-tight">SuitCds</h1>
-                    <p class="text-[10px] text-zinc-500 font-bold tracking-[0.2em] uppercase">V29 STABLE</p>
+                    <p class="text-[10px] text-blue-400 font-bold tracking-[0.2em] uppercase">V30 BLUE STUDIO</p>
                 </div>
             </div>
-            <div class="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-500">
-                LITE
+            <div class="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-[10px] font-mono text-blue-400">
+                PRO
             </div>
         </div>
     </header>
@@ -105,55 +105,56 @@
         <!-- 1. VINHETAS -->
         <section>
             <div class="flex justify-between items-end mb-4 px-1">
-                <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-                    <span class="w-4 h-4 rounded bg-zinc-800 text-white flex items-center justify-center text-[10px]">1</span> 
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <span class="w-4 h-4 rounded bg-slate-800 text-white flex items-center justify-center text-[10px]">1</span> 
                     Vinhetas
                 </h2>
-                <span id="slot-counter" class="text-[10px] text-zinc-600 font-mono bg-zinc-900 px-2 py-0.5 rounded">0/2</span>
+                <span id="slot-counter" class="text-[10px] text-slate-500 font-mono bg-slate-900 px-2 py-0.5 rounded">0/2</span>
             </div>
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="card h-24 flex flex-col items-center justify-center gap-2 group" id="slot-1">
                     <input type="file" class="phantom-input" accept="*" onchange="loadVinheta(0, this)">
-                    <div id="icon-1" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 group-hover:border-green-500/50 transition-colors">1</div>
-                    <span id="name-1" class="text-[11px] font-medium text-zinc-400 truncate w-full px-3 text-center">Toque para adicionar</span>
-                    <button onclick="clearVinheta(0, event)" id="btn-clr-1" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-red-400 z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    <div id="icon-1" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-500 group-hover:border-blue-500/50 transition-colors">1</div>
+                    <span id="name-1" class="text-[11px] font-medium text-slate-400 truncate w-full px-3 text-center">Toque para adicionar</span>
+                    <button onclick="clearVinheta(0, event)" id="btn-clr-1" class="hidden absolute top-1 right-1 p-2 text-slate-500 hover:text-red-400 z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
                 </div>
                 <div class="card h-24 flex flex-col items-center justify-center gap-2 group" id="slot-2">
                     <input type="file" class="phantom-input" accept="*" onchange="loadVinheta(1, this)">
-                    <div id="icon-2" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 group-hover:border-green-500/50 transition-colors">2</div>
-                    <span id="name-2" class="text-[11px] font-medium text-zinc-400 truncate w-full px-3 text-center">Toque para adicionar</span>
-                    <button onclick="clearVinheta(1, event)" id="btn-clr-2" class="hidden absolute top-1 right-1 p-2 text-zinc-500 hover:text-red-400 z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    <div id="icon-2" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-500 group-hover:border-blue-500/50 transition-colors">2</div>
+                    <span id="name-2" class="text-[11px] font-medium text-slate-400 truncate w-full px-3 text-center">Toque para adicionar</span>
+                    <button onclick="clearVinheta(1, event)" id="btn-clr-2" class="hidden absolute top-1 right-1 p-2 text-slate-500 hover:text-red-400 z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
                 </div>
             </div>
         </section>
 
         <!-- 2. SETUP -->
         <section>
-            <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-4 px-1 flex items-center gap-2">
-                <span class="w-4 h-4 rounded bg-zinc-800 text-white flex items-center justify-center text-[10px]">2</span> 
-                Painel
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-1 flex items-center gap-2">
+                <span class="w-4 h-4 rounded bg-slate-800 text-white flex items-center justify-center text-[10px]">2</span> 
+                Painel DJ
             </h2>
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="card p-3 relative overflow-hidden">
-                    <label class="text-[9px] text-zinc-500 font-bold uppercase block mb-1">Posição</label>
+                    <label class="text-[9px] text-slate-500 font-bold uppercase block mb-1">Posição</label>
+                    <!-- UPDATED LOGIC SELECTION -->
                     <select id="sel-pos" class="w-full bg-transparent text-xs text-white outline-none cursor-pointer appearance-none relative z-10 font-medium">
-                        <option value="safeEnd">🛡️ Fim (Safe -15s)</option>
+                        <option value="smartDrop" selected>🛡️ Smart Drop (-45s)</option>
                         <option value="start">▶️ Início (0:00)</option>
                         <option value="intro">⏳ Intro (0:15)</option>
                         <option value="middle">📏 Meio (50%)</option>
                     </select>
-                    <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-600 absolute right-3 bottom-3 z-0"></i>
+                    <i data-lucide="chevron-down" class="w-3 h-3 text-slate-600 absolute right-3 bottom-3 z-0"></i>
                 </div>
                 <div class="card p-3 relative overflow-hidden">
-                    <label class="text-[9px] text-zinc-500 font-bold uppercase block mb-1">Estilo</label>
+                    <label class="text-[9px] text-slate-500 font-bold uppercase block mb-1">Estilo</label>
                     <select id="sel-mix" class="w-full bg-transparent text-xs text-white outline-none cursor-pointer appearance-none relative z-10 font-medium">
-                        <option value="ducking">📻 Rádio (Baixa Vol)</option>
+                        <option value="ducking">📻 Rádio (Baixa Fundo)</option>
                         <option value="overlay">🔥 Rave (Por Cima)</option>
                         <option value="cut">✂️ Seco (Corta Som)</option>
                     </select>
-                    <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-600 absolute right-3 bottom-3 z-0"></i>
+                    <i data-lucide="chevron-down" class="w-3 h-3 text-slate-600 absolute right-3 bottom-3 z-0"></i>
                 </div>
             </div>
         </section>
@@ -161,50 +162,51 @@
         <!-- 3. PLAYLIST -->
         <section>
             <div class="flex justify-between items-end mb-4 px-1">
-                <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-                    <span class="w-4 h-4 rounded bg-zinc-800 text-white flex items-center justify-center text-[10px]">3</span> 
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <span class="w-4 h-4 rounded bg-slate-800 text-white flex items-center justify-center text-[10px]">3</span> 
                     Arquivos
                 </h2>
-                <span id="track-counter" class="text-[10px] text-zinc-600 font-mono bg-zinc-900 px-2 py-0.5 rounded">0/50</span>
+                <span id="track-counter" class="text-[10px] text-slate-500 font-mono bg-slate-900 px-2 py-0.5 rounded">0/50</span>
             </div>
 
             <div class="flex gap-3 mb-4">
-                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-zinc-800 cursor-pointer relative overflow-hidden hover:border-zinc-600 transition-colors">
+                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-slate-800 cursor-pointer relative overflow-hidden hover:border-slate-600 transition-colors">
                     <input type="file" class="phantom-input" id="inp-music" multiple accept="*">
-                    <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                        <i data-lucide="music" class="w-4 h-4 text-green-400"></i>
+                    <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
+                        <i data-lucide="music" class="w-4 h-4 text-blue-400"></i>
                     </div>
-                    <span class="text-[10px] font-bold text-zinc-300">SELECIONAR</span>
+                    <span class="text-[10px] font-bold text-slate-300">SELECIONAR</span>
                 </div>
-                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-zinc-800 cursor-pointer relative overflow-hidden hover:border-zinc-600 transition-colors">
+                <div class="card flex-1 h-14 flex flex-row items-center justify-center gap-2 active:bg-slate-800 cursor-pointer relative overflow-hidden hover:border-slate-600 transition-colors">
                     <input type="file" class="phantom-input" id="inp-zip" accept="*">
-                    <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                        <i data-lucide="archive" class="w-4 h-4 text-emerald-400"></i>
+                    <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
+                        <i data-lucide="archive" class="w-4 h-4 text-cyan-400"></i>
                     </div>
-                    <span class="text-[10px] font-bold text-zinc-300">ABRIR ZIP</span>
+                    <span class="text-[10px] font-bold text-slate-300">ABRIR ZIP</span>
                 </div>
             </div>
 
             <!-- LISTA -->
             <div id="list-container" class="hidden space-y-2 pb-4"></div>
             
-            <div id="empty-msg" class="text-center py-12 border border-dashed border-zinc-800 rounded-2xl">
-                <div class="w-12 h-12 rounded-full bg-zinc-900 mx-auto flex items-center justify-center mb-3">
-                    <i data-lucide="folder-search" class="w-5 h-5 text-zinc-600"></i>
+            <div id="empty-msg" class="text-center py-12 border border-dashed border-slate-800 rounded-2xl">
+                <div class="w-12 h-12 rounded-full bg-slate-900 mx-auto flex items-center justify-center mb-3">
+                    <i data-lucide="folder-search" class="w-5 h-5 text-slate-600"></i>
                 </div>
-                <p class="text-xs text-zinc-500 font-medium">Nenhum arquivo</p>
+                <p class="text-xs text-slate-500 font-medium">Nenhum arquivo</p>
+                <p class="text-[10px] text-slate-600 mt-1">Sistemas V30 Ready</p>
             </div>
         </section>
 
     </main>
 
     <!-- FOOTER -->
-    <footer class="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-xl border-t border-white/5 p-5 z-50 pb-8">
+    <footer class="fixed bottom-0 left-0 right-0 bg-[#020617]/90 backdrop-blur-xl border-t border-white/5 p-5 z-50 pb-8">
         <div class="max-w-xl mx-auto flex gap-3">
-            <button id="btn-process" onclick="startProcessing()" disabled class="flex-1 bg-zinc-900 text-zinc-600 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50">
+            <button id="btn-process" onclick="startProcessing()" disabled class="flex-1 bg-slate-900 text-slate-600 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50">
                 <span>AGUARDANDO...</span>
             </button>
-            <button id="btn-download" type="button" onclick="downloadZip(event)" class="hidden w-[45%] bg-white text-black h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:bg-zinc-200">
+            <button id="btn-download" type="button" onclick="downloadZip(event)" class="hidden w-[45%] bg-blue-500 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:bg-blue-400">
                 <i data-lucide="download" class="w-4 h-4"></i>
                 <span>BAIXAR ZIP</span>
             </button>
@@ -212,12 +214,12 @@
     </footer>
 
     <script>
-        // --- EFEITO NEVE ---
-        function createSnow() {
+        // --- PARTICLES BLUE ---
+        function createParticles() {
             const container = document.body;
             for(let i=0; i<15; i++) {
                 const flake = document.createElement('div');
-                flake.classList.add('snowflake');
+                flake.classList.add('particle');
                 flake.style.width = Math.random() * 2 + 1 + 'px';
                 flake.style.height = flake.style.width;
                 flake.style.left = Math.random() * 100 + 'vw';
@@ -227,7 +229,7 @@
                 container.appendChild(flake);
             }
         }
-        createSnow();
+        createParticles();
 
         // --- GLOBAL ---
         let audioCtx;
@@ -248,7 +250,7 @@
         function notify(msg, type='info') {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
-            t.style.color = type === 'error' ? '#ef4444' : '#000';
+            t.style.color = type === 'error' ? '#ef4444' : '#0f172a';
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
@@ -269,7 +271,7 @@
                 vinhetaSlots[idx] = { buffer: buf, duration: buf.duration, name: file.name };
                 
                 document.getElementById(`slot-${idx+1}`).classList.add('slot-filled');
-                iconEl.className = "w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg shadow-green-500/30";
+                iconEl.className = "w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30";
                 iconEl.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
                 nameEl.innerText = file.name;
                 nameEl.classList.add('text-white');
@@ -277,7 +279,7 @@
                 lucide.createIcons();
                 updateState();
             } catch(e) {
-                notify("Erro: Arquivo de áudio inválido", "error");
+                notify("Erro: Arquivo inválido", "error");
                 nameEl.innerText = "Erro";
             }
             input.value = ''; 
@@ -289,7 +291,7 @@
             document.getElementById(`slot-${idx+1}`).classList.remove('slot-filled');
             const iconEl = document.getElementById(`icon-${idx+1}`);
             const nameEl = document.getElementById(`name-${idx+1}`);
-            iconEl.className = "w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-500 transition-colors";
+            iconEl.className = "w-8 h-8 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-500 transition-colors";
             iconEl.innerHTML = idx+1;
             nameEl.innerText = "Toque para adicionar";
             nameEl.classList.remove('text-white');
@@ -320,7 +322,6 @@
             this.value = '';
         };
 
-        // --- ZIP INPUT ---
         document.getElementById('inp-zip').onchange = async function() {
             const f = this.files[0];
             if(!f) return;
@@ -377,12 +378,11 @@
             updateState();
         }
 
-        // *** NOVIDADE: PULAR PARA VINHETA ***
+        // Pular para o drop/vinheta
         window.jumpToVinheta = (id) => {
             const t = tracks.find(x => x.id === id);
             if(!t || !t.blob) return;
 
-            // Se não estiver tocando esta música, dá play primeiro
             if(playingId !== id) {
                 audioEl.src = URL.createObjectURL(t.blob);
                 playingId = id;
@@ -393,7 +393,7 @@
             audioEl.currentTime = targetTime;
             audioEl.play();
             updateState();
-            notify(`Pulo para ${formatTime(targetTime)}`);
+            notify(`Preview em ${formatTime(targetTime)}`);
         }
         
         audioEl.onended = () => { playingId = null; updateState(); };
@@ -421,35 +421,34 @@
                     const isPlaying = playingId === t.id;
                     let controls = '';
 
-                    // Controles quando pronto
                     if(t.status === 'done') {
                         controls = `
                         <div class="flex items-center gap-2">
-                            <button onclick="jumpToVinheta('${t.id}')" class="px-2 py-1.5 rounded-lg bg-zinc-800 text-green-400 text-[10px] font-bold flex items-center gap-1 border border-zinc-700 hover:bg-zinc-700 active:scale-95 transition-all">
+                            <button onclick="jumpToVinheta('${t.id}')" class="px-2 py-1.5 rounded-lg bg-slate-800 text-blue-400 text-[10px] font-bold flex items-center gap-1 border border-slate-700 hover:bg-slate-700 active:scale-95 transition-all">
                                 <i data-lucide="crosshair" class="w-3 h-3"></i> 
                                 ${formatTime(t.vinhetaTime)}
                             </button>
-                            <button onclick="togglePlay('${t.id}')" class="w-8 h-8 rounded-full ${isPlaying ? 'bg-white text-black' : 'bg-zinc-800 text-green-400'} flex items-center justify-center transition-colors">
+                            <button onclick="togglePlay('${t.id}')" class="w-8 h-8 rounded-full ${isPlaying ? 'bg-white text-black' : 'bg-slate-800 text-blue-400'} flex items-center justify-center transition-colors">
                                 <i data-lucide="${isPlaying ? 'pause' : 'play'}" class="w-3 h-3 fill-current"></i>
                             </button>
                         </div>`;
                     } else if (t.status === 'processing') {
-                         controls = `<i data-lucide="loader-2" class="w-4 h-4 text-yellow-500 spin"></i>`;
+                         controls = `<i data-lucide="loader-2" class="w-4 h-4 text-blue-400 spin"></i>`;
                     } else if (t.status === 'error') {
                         controls = `<i data-lucide="alert-triangle" class="w-4 h-4 text-red-500"></i>`;
                     }
 
                     return `
-                    <div class="card p-3 flex items-center justify-between group">
+                    <div class="card p-3 flex items-center justify-between group border-l-2 ${t.status==='done'?'border-l-blue-500':'border-l-transparent'}">
                         <div class="flex items-center gap-3 overflow-hidden flex-1">
                             <div class="min-w-0">
                                 <div class="text-xs text-white truncate font-medium">${t.originalName}</div>
-                                <div class="text-[10px] text-zinc-500">${t.msg}</div>
+                                <div class="text-[10px] text-slate-500">${t.msg}</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-3 pl-2">
                             ${controls}
-                            <button onclick="remTrack('${t.id}')" class="p-2 text-zinc-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            <button onclick="remTrack('${t.id}')" class="p-2 text-slate-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                     </div>`;
                 }).join('');
@@ -463,28 +462,28 @@
             
             if(isProcessing) {
                 btn.disabled = true; 
-                btn.className = "flex-1 bg-zinc-800 text-zinc-400 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
+                btn.className = "flex-1 bg-slate-800 text-slate-400 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
                 btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> PROCESSANDO...`;
             } else if(hasSuccess && !isProcessing && tracks.every(t=>t.status==='done' || t.status==='error')) {
-                btn.className = "flex-1 bg-zinc-900 text-zinc-500 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
+                btn.className = "flex-1 bg-slate-900 text-slate-500 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
                 btn.innerText = "CONCLUÍDO";
                 btn.disabled = true;
                 document.getElementById('btn-download').classList.remove('hidden');
             } else if(canProcess) {
                 btn.disabled = false; 
-                btn.className = "flex-1 bg-green-600 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(34,197,94,0.3)] active:scale-95 transition-all";
+                btn.className = "flex-1 bg-blue-600 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.3)] active:scale-95 transition-all";
                 btn.innerHTML = `INICIAR MIXAGEM`;
                 document.getElementById('btn-download').classList.add('hidden');
             } else {
                 btn.disabled = true; 
-                btn.className = "flex-1 bg-zinc-900 text-zinc-600 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
+                btn.className = "flex-1 bg-slate-900 text-slate-600 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
                 btn.innerText = !activeV ? "FALTA VINHETA" : "ADD MÚSICAS";
                 document.getElementById('btn-download').classList.add('hidden');
             }
             lucide.createIcons();
         }
 
-        // --- PROCESSAMENTO DE ÁUDIO ---
+        // --- PROCESSAMENTO (SMART DROP LOGIC) ---
         async function startProcessing() {
             if(isProcessing) return;
             initAudio();
@@ -515,11 +514,24 @@
                     const vDur = vinheta.duration;
                     const tDur = trackBuffer.duration;
 
-                    if (posMode === 'safeEnd') startTime = Math.max(0, tDur - vDur - 15);
-                    else if (posMode === 'intro') startTime = Math.min(15, tDur / 2);
-                    else if (posMode === 'middle') startTime = (tDur / 2) - (vDur / 2);
-                    
-                    // *** SALVA O TEMPO DA VINHETA PARA O BOTÃO DE PREVIEW ***
+                    // --- LOGICA DE POSICIONAMENTO ---
+                    if (posMode === 'smartDrop') {
+                        // REGRA: Pelo menos 30s antes do fim.
+                        // STRATEGY: Colocar 45s antes do fim (Margem de segurança para o Drop/Last Chorus)
+                        const safeMargin = 45; // Segundos antes do fim
+                        startTime = Math.max(0, tDur - vDur - safeMargin);
+                    } 
+                    else if (posMode === 'intro') {
+                        startTime = Math.min(15, tDur / 2);
+                    } 
+                    else if (posMode === 'middle') {
+                        startTime = (tDur / 2) - (vDur / 2);
+                    }
+                    else {
+                        startTime = 0;
+                    }
+
+                    // Grava o tempo para o preview
                     tracks[i].vinhetaTime = startTime;
 
                     const offlineCtx = new OfflineAudioContext(2, trackBuffer.length, trackBuffer.sampleRate);
@@ -551,7 +563,7 @@
                     tracks[i].blob = bufferToWave(renderedBuffer, renderedBuffer.length);
                     tracks[i].status = 'done';
                     tracks[i].msg = 'Pronto';
-                    tracks[i].file = null; // Limpa RAM
+                    tracks[i].file = null;
 
                 } catch(e) {
                     tracks[i].status = 'error';
@@ -583,9 +595,9 @@
             return new Blob([buffer], { type: "audio/wav" });
         }
 
-        // --- DOWNLOAD ZIP (CORREÇÃO DE CRASH) ---
+        // --- DOWNLOAD ZIP ---
         async function downloadZip(e) {
-            if(e) e.preventDefault(); // Impede reload do form/botão
+            if(e) e.preventDefault();
             
             const btn = document.getElementById('btn-download');
             const originalText = btn.innerHTML;
@@ -615,9 +627,6 @@
                     return;
                 }
 
-                // *** CRITICAL FIX: STORE MODE ***
-                // "STORE" não tenta comprimir o áudio (que já é ruim de comprimir).
-                // Isso economiza 90% da RAM e CPU, evitando o reload da página.
                 const content = await zip.generateAsync({
                     type: "blob", 
                     compression: "STORE" 
