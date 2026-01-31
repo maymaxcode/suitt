@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SuitCds V30 Blue</title>
+    <title>SuitCds V31 Studio</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,9 +24,9 @@
             overflow-x: hidden;
         }
 
-        /* ANIMAÇÃO DE FUNDO (Partículas Azuis) */
+        /* ANIMAÇÃO DE FUNDO */
         .particle {
-            position: fixed; top: -10px; background: rgba(56, 189, 248, 0.15); /* Sky Blue */
+            position: fixed; top: -10px; background: rgba(56, 189, 248, 0.15);
             border-radius: 50%; pointer-events: none; z-index: 0; animation: fall linear infinite;
         }
         @keyframes fall { to { transform: translateY(110vh); } }
@@ -37,32 +37,19 @@
             opacity: 0; z-index: 20; cursor: pointer;
         }
 
-        /* GLASS STYLE BLUE */
+        /* GLASS STYLE */
         .glass { 
-            background: rgba(15, 23, 42, 0.85); /* Slate 900 */
+            background: rgba(15, 23, 42, 0.9); 
             backdrop-filter: blur(16px); 
             -webkit-backdrop-filter: blur(16px); 
-            border: 1px solid rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.1);
         }
         .card {
             @apply glass; border-radius: 16px; position: relative; z-index: 10; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .card:active { transform: scale(0.98); background: rgba(30, 41, 59, 0.9); }
+        .card:active { transform: scale(0.98); background: rgba(30, 41, 59, 1); border-color: #3b82f6; }
         
-        .slot-filled { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
-        
-        /* PLAYER SLIDER BLUE */
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
-            background: #fff; cursor: pointer; margin-top: -5px; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 2px; cursor: pointer; background: #1e293b; border-radius: 2px;
-        }
-        
-        .spin { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .slot-filled { border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
         
         /* TOAST */
         .toast {
@@ -79,19 +66,18 @@
 <body class="min-h-screen pb-44 selection:bg-blue-500/30">
 
     <audio id="preview-audio" playsinline webkit-playsinline></audio>
-
     <div id="toast"><i data-lucide="info" class="w-4 h-4"></i> <span id="toast-msg">Info</span></div>
 
     <!-- HEADER -->
     <header class="pt-8 pb-6 px-6 border-b border-white/5 bg-[#020617]/80 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
-                    <i data-lucide="waves" class="w-5 h-5 fill-current"></i>
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
+                    <i data-lucide="layers" class="w-5 h-5 fill-current"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-tight text-white leading-tight">SuitCds</h1>
-                    <p class="text-[10px] text-blue-400 font-bold tracking-[0.2em] uppercase">V30 BLUE STUDIO</p>
+                    <p class="text-[10px] text-blue-400 font-bold tracking-[0.2em] uppercase">V31 STUDIO FINAL</p>
                 </div>
             </div>
             <div class="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-[10px] font-mono text-blue-400">
@@ -138,7 +124,6 @@
             <div class="grid grid-cols-2 gap-3">
                 <div class="card p-3 relative overflow-hidden">
                     <label class="text-[9px] text-slate-500 font-bold uppercase block mb-1">Posição</label>
-                    <!-- UPDATED LOGIC SELECTION -->
                     <select id="sel-pos" class="w-full bg-transparent text-xs text-white outline-none cursor-pointer appearance-none relative z-10 font-medium">
                         <option value="smartDrop" selected>🛡️ Smart Drop (-45s)</option>
                         <option value="start">▶️ Início (0:00)</option>
@@ -194,21 +179,21 @@
                     <i data-lucide="folder-search" class="w-5 h-5 text-slate-600"></i>
                 </div>
                 <p class="text-xs text-slate-500 font-medium">Nenhum arquivo</p>
-                <p class="text-[10px] text-slate-600 mt-1">Sistemas V30 Ready</p>
+                <p class="text-[10px] text-slate-600 mt-1">Sistemas V31 Ready</p>
             </div>
         </section>
 
     </main>
 
     <!-- FOOTER -->
-    <footer class="fixed bottom-0 left-0 right-0 bg-[#020617]/90 backdrop-blur-xl border-t border-white/5 p-5 z-50 pb-8">
+    <footer class="fixed bottom-0 left-0 right-0 bg-[#020617]/95 backdrop-blur-xl border-t border-white/5 p-5 z-50 pb-8">
         <div class="max-w-xl mx-auto flex gap-3">
             <button id="btn-process" onclick="startProcessing()" disabled class="flex-1 bg-slate-900 text-slate-600 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50">
                 <span>AGUARDANDO...</span>
             </button>
-            <button id="btn-download" type="button" onclick="downloadZip(event)" class="hidden w-[45%] bg-blue-500 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:bg-blue-400">
-                <i data-lucide="download" class="w-4 h-4"></i>
-                <span>BAIXAR ZIP</span>
+            <button id="btn-download" type="button" onclick="downloadZip(event)" class="hidden w-[45%] bg-blue-600 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:bg-blue-500 hover:shadow-blue-500/50 active:scale-95">
+                <i data-lucide="package-check" class="w-4 h-4"></i>
+                <span>BAIXAR TUDO</span>
             </button>
         </div>
     </footer>
@@ -362,7 +347,7 @@
             updateState(); 
         }
 
-        // --- PLAYER ---
+        // --- PLAYER & SINGLE DOWNLOAD ---
         const audioEl = document.getElementById('preview-audio');
         
         window.togglePlay = (id) => {
@@ -378,7 +363,6 @@
             updateState();
         }
 
-        // Pular para o drop/vinheta
         window.jumpToVinheta = (id) => {
             const t = tracks.find(x => x.id === id);
             if(!t || !t.blob) return;
@@ -394,6 +378,19 @@
             audioEl.play();
             updateState();
             notify(`Preview em ${formatTime(targetTime)}`);
+        }
+
+        window.downloadSingle = (id) => {
+            const t = tracks.find(x => x.id === id);
+            if(t && t.blob) {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(t.blob);
+                let safeName = t.originalName.replace(/\.[^/.]+$/, "");
+                a.download = `${safeName} (Mix).wav`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
         }
         
         audioEl.onended = () => { playingId = null; updateState(); };
@@ -424,11 +421,17 @@
                     if(t.status === 'done') {
                         controls = `
                         <div class="flex items-center gap-2">
+                            <!-- SINGLE DOWNLOAD BTN -->
+                            <button onclick="downloadSingle('${t.id}')" title="Baixar este arquivo" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center border border-slate-700 transition-colors">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                            </button>
+                            
                             <button onclick="jumpToVinheta('${t.id}')" class="px-2 py-1.5 rounded-lg bg-slate-800 text-blue-400 text-[10px] font-bold flex items-center gap-1 border border-slate-700 hover:bg-slate-700 active:scale-95 transition-all">
                                 <i data-lucide="crosshair" class="w-3 h-3"></i> 
                                 ${formatTime(t.vinhetaTime)}
                             </button>
-                            <button onclick="togglePlay('${t.id}')" class="w-8 h-8 rounded-full ${isPlaying ? 'bg-white text-black' : 'bg-slate-800 text-blue-400'} flex items-center justify-center transition-colors">
+
+                            <button onclick="togglePlay('${t.id}')" class="w-8 h-8 rounded-full ${isPlaying ? 'bg-white text-black' : 'bg-blue-600 text-white'} flex items-center justify-center transition-colors shadow-lg shadow-blue-900/20">
                                 <i data-lucide="${isPlaying ? 'pause' : 'play'}" class="w-3 h-3 fill-current"></i>
                             </button>
                         </div>`;
@@ -466,12 +469,12 @@
                 btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> PROCESSANDO...`;
             } else if(hasSuccess && !isProcessing && tracks.every(t=>t.status==='done' || t.status==='error')) {
                 btn.className = "flex-1 bg-slate-900 text-slate-500 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
-                btn.innerText = "CONCLUÍDO";
+                btn.innerText = "MIXAGEM CONCLUÍDA";
                 btn.disabled = true;
                 document.getElementById('btn-download').classList.remove('hidden');
             } else if(canProcess) {
                 btn.disabled = false; 
-                btn.className = "flex-1 bg-blue-600 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.3)] active:scale-95 transition-all";
+                btn.className = "flex-1 bg-blue-600 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.3)] active:scale-95 transition-all hover:bg-blue-500";
                 btn.innerHTML = `INICIAR MIXAGEM`;
                 document.getElementById('btn-download').classList.add('hidden');
             } else {
@@ -483,7 +486,7 @@
             lucide.createIcons();
         }
 
-        // --- PROCESSAMENTO (SMART DROP LOGIC) ---
+        // --- PROCESSAMENTO (SMART DROP: 45s antes) ---
         async function startProcessing() {
             if(isProcessing) return;
             initAudio();
@@ -516,9 +519,8 @@
 
                     // --- LOGICA DE POSICIONAMENTO ---
                     if (posMode === 'smartDrop') {
-                        // REGRA: Pelo menos 30s antes do fim.
-                        // STRATEGY: Colocar 45s antes do fim (Margem de segurança para o Drop/Last Chorus)
-                        const safeMargin = 45; // Segundos antes do fim
+                        // 45 segundos antes do fim
+                        const safeMargin = 45; 
                         startTime = Math.max(0, tDur - vDur - safeMargin);
                     } 
                     else if (posMode === 'intro') {
@@ -531,7 +533,6 @@
                         startTime = 0;
                     }
 
-                    // Grava o tempo para o preview
                     tracks[i].vinhetaTime = startTime;
 
                     const offlineCtx = new OfflineAudioContext(2, trackBuffer.length, trackBuffer.sampleRate);
@@ -595,7 +596,7 @@
             return new Blob([buffer], { type: "audio/wav" });
         }
 
-        // --- DOWNLOAD ZIP ---
+        // --- DOWNLOAD ZIP OPTIMIZED ---
         async function downloadZip(e) {
             if(e) e.preventDefault();
             
@@ -604,7 +605,7 @@
             
             try {
                 btn.disabled = true;
-                btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> GERANDO...`;
+                btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 spin"></i> EMPACOTANDO...`;
                 lucide.createIcons();
 
                 const zip = new JSZip();
@@ -614,7 +615,8 @@
                 tracks.forEach((t, idx) => {
                     if (t.status === 'done' && t.blob) {
                         let safeName = t.originalName.replace(/\.[^/.]+$/, "");
-                        let fileName = `${String(idx+1).padStart(2, '0')} - ${safeName} (SuitCds).wav`;
+                        // FORÇA EXTENSÃO .WAV PARA GARANTIR FUNCIONAMENTO
+                        let fileName = `${String(idx+1).padStart(2, '0')} - ${safeName} (Mix).wav`;
                         folder.file(fileName, t.blob);
                         count++;
                     }
@@ -627,6 +629,7 @@
                     return;
                 }
 
+                // *** MODO STORE: SEM COMPRESSÃO PARA NÃO TRAVAR ***
                 const content = await zip.generateAsync({
                     type: "blob", 
                     compression: "STORE" 
@@ -636,7 +639,7 @@
 
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(content);
-                a.download = "SuitCds_Pacote.zip";
+                a.download = "SuitCds_Pack_Studio.zip";
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -645,7 +648,8 @@
 
             } catch(e) {
                 console.error(e);
-                notify("Erro de memória. Baixe menos músicas.", "error");
+                notify("Erro de memória no ZIP.", "error");
+                alert("Seu navegador está sem memória para criar o ZIP. Use os botões de download individual ao lado de cada música.");
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
