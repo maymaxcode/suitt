@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SuitCds V35 Horizon</title>
+    <title>SuitCds</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,21 +12,27 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* TEMA HORIZON BLUE */
+        /* TEMA NIGHTFALL */
         body { 
-            background-color: #020617; /* Slate 950 */
+            background-color: #0f172a; 
             color: #e2e8f0; 
             -webkit-tap-highlight-color: transparent;
             font-family: 'Inter', system-ui, sans-serif;
             overflow-x: hidden;
         }
 
-        /* FLOKOS DE NEVE SUAVES */
+        /* FUNDO DINÂMICO */
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, #1e3a8a 0%, #0f172a 60%);
+            z-index: 0; pointer-events: none;
+        }
+
+        /* NEVE */
         .snowflake {
-            position: fixed; top: -10px; background: rgba(56, 189, 248, 0.4);
+            position: fixed; top: -10px; background: rgba(147, 197, 253, 0.3);
             border-radius: 50%; pointer-events: none; z-index: 0; 
-            animation: fall linear infinite;
-            filter: blur(1px);
+            animation: fall linear infinite; filter: blur(1px);
         }
         @keyframes fall { to { transform: translateY(110vh); opacity: 0; } }
 
@@ -36,23 +42,19 @@
             opacity: 0; z-index: 20; cursor: pointer;
         }
 
-        /* GLASS CARD TECH */
+        /* GLASS CARD */
         .glass { 
-            background: rgba(15, 23, 42, 0.6); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px); 
-            border: 1px solid rgba(56, 189, 248, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
         .card {
             @apply glass; border-radius: 16px; position: relative; z-index: 10; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .card:active { transform: scale(0.98); border-color: #3b82f6; background: rgba(30, 58, 138, 0.3); }
-        
-        .slot-filled { border-color: #3b82f6; background: rgba(30, 58, 138, 0.2); }
-
-        /* VISUALIZER CANVAS */
-        canvas { width: 100%; height: 100%; border-radius: 12px; }
+        .card:active { transform: scale(0.98); border-color: #60a5fa; background: rgba(30, 58, 138, 0.5); }
+        .slot-filled { border-color: #3b82f6; background: rgba(30, 58, 138, 0.4); }
 
         /* TOAST */
         .toast {
@@ -68,33 +70,26 @@
 </head>
 <body class="min-h-screen pb-44 selection:bg-blue-500/30">
 
-    <audio id="preview-audio" playsinline webkit-playsinline></audio>
+    <div class="bg-glow"></div>
+    <!-- PLAYER OCULTO SIMPLIFICADO -->
+    <audio id="main-player"></audio>
+    
     <div id="toast"><i data-lucide="info" class="w-4 h-4 text-blue-400"></i> <span id="toast-msg">Info</span></div>
 
-    <!-- HEADER & VISUALIZER -->
-    <header class="pt-6 pb-6 px-6 bg-gradient-to-b from-[#020617] to-transparent sticky top-0 z-40">
-        <div class="max-w-xl mx-auto">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.4)]">
-                        <i data-lucide="waves" class="w-5 h-5 fill-current"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold tracking-tight text-white leading-tight">SuitCds</h1>
-                        <p class="text-[10px] text-blue-400 font-bold tracking-[0.2em] uppercase">V35 HORIZON AI</p>
-                    </div>
+    <!-- HEADER -->
+    <header class="pt-8 pb-6 px-6 sticky top-0 z-40">
+        <div class="max-w-xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/50">
+                    <i data-lucide="play-circle" class="w-6 h-6 fill-current"></i>
                 </div>
-                <div class="text-[10px] font-mono text-slate-500 bg-slate-900/50 px-2 py-1 rounded border border-slate-800">
-                    WAV • NO-ZIP
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white leading-tight">SuitCds</h1>
+                    <p class="text-[10px] text-blue-300 font-bold tracking-[0.2em] uppercase">V38 STABLE</p>
                 </div>
             </div>
-
-            <!-- ANALYZER VISUALIZER -->
-            <div class="h-16 w-full bg-slate-900/50 rounded-xl border border-blue-900/30 overflow-hidden relative">
-                <canvas id="visualizer"></canvas>
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <span id="vis-text" class="text-[10px] text-blue-500/50 font-mono tracking-widest">AGUARDANDO ÁUDIO</span>
-                </div>
+            <div class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-[10px] font-mono text-blue-300">
+                NO-BUG EDITION
             </div>
         </div>
     </header>
@@ -112,12 +107,14 @@
             </div>
             
             <div class="grid grid-cols-2 gap-3">
+                <!-- SLOT 1 -->
                 <div class="card h-20 flex flex-col items-center justify-center gap-1 group" id="slot-1">
                     <input type="file" class="phantom-input" accept="*" onchange="loadVinheta(0, this)">
                     <div id="icon-1" class="w-6 h-6 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-500 group-hover:border-blue-500 transition-colors">1</div>
                     <span id="name-1" class="text-[10px] font-medium text-slate-400 truncate w-full px-3 text-center">Adicionar</span>
                     <button onclick="clearVinheta(0, event)" id="btn-clr-1" class="hidden absolute top-1 right-1 p-1 text-slate-500 hover:text-red-400 z-30"><i data-lucide="x" class="w-3 h-3"></i></button>
                 </div>
+                <!-- SLOT 2 -->
                 <div class="card h-20 flex flex-col items-center justify-center gap-1 group" id="slot-2">
                     <input type="file" class="phantom-input" accept="*" onchange="loadVinheta(1, this)">
                     <div id="icon-2" class="w-6 h-6 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-500 group-hover:border-blue-500 transition-colors">2</div>
@@ -127,45 +124,37 @@
             </div>
         </section>
 
-        <!-- 2. SETUP AI -->
+        <!-- 2. SETUP -->
         <section>
             <div class="flex justify-between items-center mb-3 px-1">
                 <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                     <span class="w-4 h-4 rounded bg-slate-800 text-white flex items-center justify-center text-[10px]">2</span> 
-                    Configuração Neural
+                    Inteligência
                 </h2>
             </div>
             
-            <div class="card p-4 space-y-3">
-                <div class="flex items-center justify-between border-b border-white/5 pb-3">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
-                            <i data-lucide="brain-circuit" class="w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <div class="text-xs font-bold text-white">IA Drop Hunter</div>
-                            <div class="text-[9px] text-slate-500">Detecta batidas fortes</div>
-                        </div>
-                    </div>
-                    <div class="text-[9px] font-mono text-green-400 bg-green-900/20 px-2 py-1 rounded">ATIVO</div>
-                </div>
-
+            <div class="card p-4 space-y-4">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-[9px] text-slate-500 font-bold uppercase block mb-1">Cálculo de Tempo</label>
-                        <select id="sel-pos" class="w-full bg-slate-900/50 text-xs text-white p-2 rounded-lg outline-none border border-slate-700">
-                            <option value="dropMatch" selected>🎯 Match Drop (Preciso)</option>
-                            <option value="calmSpot">🌊 Calm Spot (Suave)</option>
-                            <option value="intro">⏳ Intro (15s)</option>
+                        <label class="text-[9px] text-slate-500 font-bold uppercase block mb-1">Posicionamento</label>
+                        <select id="sel-pos" class="w-full bg-slate-900/80 text-xs text-white p-2 rounded-lg outline-none border border-slate-700 focus:border-blue-500 transition-colors">
+                            <option value="gapHunter" selected>🕵️ Fugir da Voz (Auto)</option>
+                            <option value="startFade">▶️ Início (Com Fade)</option>
+                            <option value="mathDrop">📐 Fim (-35s)</option>
                         </select>
                     </div>
                     <div>
                         <label class="text-[9px] text-slate-500 font-bold uppercase block mb-1">Tipo de Mix</label>
-                        <select id="sel-mix" class="w-full bg-slate-900/50 text-xs text-white p-2 rounded-lg outline-none border border-slate-700">
-                            <option value="ducking">📻 Rádio (Baixa Fundo)</option>
-                            <option value="overlay">🔥 Colagem (Por Cima)</option>
+                        <select id="sel-mix" class="w-full bg-slate-900/80 text-xs text-white p-2 rounded-lg outline-none border border-slate-700 focus:border-blue-500 transition-colors">
+                            <option value="ducking">📻 Rádio (Suave)</option>
+                            <option value="overlay">🔥 Rave (Por Cima)</option>
                         </select>
                     </div>
+                </div>
+                
+                <div class="text-[9px] text-slate-400 bg-slate-900/50 p-2 rounded border border-slate-800 flex items-start gap-2">
+                    <i data-lucide="lightbulb" class="w-3 h-3 mt-0.5 text-yellow-500"></i>
+                    <span><strong>Dica:</strong> Use "Início (Com Fade)" para sets mixados e "Fugir da Voz" para músicas soltas.</span>
                 </div>
             </div>
         </section>
@@ -177,34 +166,34 @@
                     <span class="w-4 h-4 rounded bg-slate-800 text-white flex items-center justify-center text-[10px]">3</span> 
                     Playlist
                 </h2>
-                <span id="track-counter" class="text-[10px] text-slate-500 font-mono">0/50</span>
+                <span id="track-counter" class="text-[10px] text-blue-400 font-mono">0/50</span>
             </div>
 
             <div class="flex gap-3 mb-4">
                 <div class="card flex-1 h-12 flex flex-row items-center justify-center gap-2 active:bg-slate-800 cursor-pointer hover:border-blue-500/50 transition-colors">
                     <input type="file" class="phantom-input" id="inp-music" multiple accept="*">
                     <i data-lucide="music" class="w-4 h-4 text-blue-400"></i>
-                    <span class="text-[10px] font-bold text-slate-300">SELECIONAR</span>
+                    <span class="text-[10px] font-bold text-slate-300">SELECIONAR MÚSICAS</span>
                 </div>
             </div>
 
             <!-- LISTA -->
             <div id="list-container" class="hidden space-y-2 pb-4"></div>
             
-            <div id="empty-msg" class="text-center py-12 border border-dashed border-slate-800 rounded-2xl">
-                <p class="text-xs text-slate-600 font-medium">Nenhum arquivo</p>
+            <div id="empty-msg" class="text-center py-12 border border-dashed border-slate-700 rounded-2xl">
+                <p class="text-xs text-slate-500 font-medium">Nenhum arquivo</p>
             </div>
         </section>
 
     </main>
 
-    <!-- FOOTER CONTROLS -->
-    <footer class="fixed bottom-0 left-0 right-0 bg-[#020617]/95 backdrop-blur-xl border-t border-white/5 p-5 z-50 pb-8">
+    <!-- FOOTER -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-[#0f172a]/95 backdrop-blur-xl border-t border-white/5 p-5 z-50 pb-8">
         <div class="max-w-xl mx-auto flex gap-3">
-            <button id="btn-process" onclick="startProcessing()" disabled class="flex-1 bg-slate-900 text-slate-600 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50">
+            <button id="btn-process" onclick="startProcessing()" disabled class="flex-1 bg-slate-800 text-slate-500 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50">
                 <span>AGUARDANDO...</span>
             </button>
-            <button id="btn-download-all" onclick="downloadAllSequence()" class="hidden w-[45%] bg-blue-600 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_25px_rgba(37,99,235,0.4)] hover:bg-blue-500 active:scale-95">
+            <button id="btn-download-all" onclick="downloadAllSequence()" class="hidden w-[45%] bg-blue-600 text-white h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-lg hover:bg-blue-500 active:scale-95">
                 <i data-lucide="layers" class="w-4 h-4"></i>
                 <span>BAIXAR TODOS</span>
             </button>
@@ -212,13 +201,13 @@
     </footer>
 
     <script>
-        // --- SNOWFLAKES ---
+        // --- EFEITO VISUAL ---
         function createSnow() {
             const container = document.body;
             for(let i=0; i<20; i++) {
                 const flake = document.createElement('div');
                 flake.classList.add('snowflake');
-                flake.style.width = Math.random() * 3 + 1 + 'px';
+                flake.style.width = Math.random() * 2 + 1 + 'px';
                 flake.style.height = flake.style.width;
                 flake.style.left = Math.random() * 100 + 'vw';
                 flake.style.opacity = Math.random() * 0.5 + 0.1;
@@ -231,23 +220,20 @@
 
         // --- GLOBAL ---
         let audioCtx;
-        let analyser;
         let vinhetaSlots = [null, null];
         let tracks = [];
         let isProcessing = false;
         let playingId = null;
         let isDownloadingAll = false;
         const MAX_TRACKS = 50;
+        
+        // PLAYER NATIVO (Sem frescura, funciona sempre)
+        const player = document.getElementById('main-player');
 
         lucide.createIcons();
 
         function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 256;
-                drawVisualizer();
-            }
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }
         document.body.addEventListener('click', () => initAudio(), {once:true});
@@ -260,43 +246,7 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        // --- VISUALIZER ---
-        function drawVisualizer() {
-            const canvas = document.getElementById('visualizer');
-            const ctx = canvas.getContext('2d');
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            
-            // Resize canvas
-            canvas.width = canvas.parentElement.offsetWidth;
-            canvas.height = canvas.parentElement.offsetHeight;
-
-            function render() {
-                requestAnimationFrame(render);
-                if(!playingId) { 
-                    ctx.clearRect(0,0,canvas.width, canvas.height); 
-                    return; 
-                }
-
-                analyser.getByteFrequencyData(dataArray);
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                const barWidth = (canvas.width / bufferLength) * 2.5;
-                let barHeight;
-                let x = 0;
-
-                for(let i = 0; i < bufferLength; i++) {
-                    barHeight = dataArray[i] / 2;
-                    // Gradiente Azul Neon
-                    ctx.fillStyle = `rgba(56, 189, 248, ${barHeight/150})`; 
-                    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                    x += barWidth + 1;
-                }
-            }
-            render();
-        }
-
-        // --- VINHETA ---
+        // --- GERENCIAMENTO DE VINHETAS ---
         async function loadVinheta(idx, input) {
             const file = input.files[0];
             if(!file) return;
@@ -304,7 +254,7 @@
             
             const nameEl = document.getElementById(`name-${idx+1}`);
             const iconEl = document.getElementById(`icon-${idx+1}`);
-            nameEl.innerText = "Analisando...";
+            nameEl.innerText = "Carregando...";
             
             try {
                 const ab = await file.arrayBuffer();
@@ -319,10 +269,7 @@
                 document.getElementById(`btn-clr-${idx+1}`).classList.remove('hidden');
                 lucide.createIcons();
                 updateState();
-            } catch(e) {
-                notify("Arquivo de áudio inválido", "error");
-                nameEl.innerText = "Erro";
-            }
+            } catch(e) { notify("Erro no arquivo", "error"); nameEl.innerText = "Erro"; }
             input.value = ''; 
         }
 
@@ -340,11 +287,11 @@
             updateState();
         }
 
-        // --- MÚSICAS ---
+        // --- GERENCIAMENTO DE MÚSICAS ---
         document.getElementById('inp-music').onchange = function() {
             if(this.files.length) {
                 if(tracks.length + this.files.length > MAX_TRACKS) {
-                    notify(`Limite de ${MAX_TRACKS} arquivos!`, "error"); return;
+                    notify(`Limite de ${MAX_TRACKS} arquivos`, "error"); return;
                 }
                 Array.from(this.files).forEach(f => {
                     tracks.push({ 
@@ -358,60 +305,75 @@
         };
 
         window.remTrack = (id) => { 
-            if(playingId === id) { document.getElementById('preview-audio').pause(); playingId = null; }
+            if(playingId === id) stopPlayer();
             tracks = tracks.filter(t => t.id !== id); 
             updateState(); 
         }
 
-        // --- PLAYER COM VISUALIZER ---
-        const audioEl = document.getElementById('preview-audio');
-        let audioSourceNode = null;
-
-        window.togglePlay = (id) => {
-            const t = tracks.find(x => x.id === id);
-            
-            // Parar
-            if(playingId) {
-                audioEl.pause();
-                playingId = null;
-                document.getElementById('vis-text').style.display = 'block';
-                if(id === playingId) { updateState(); return; }
-            }
-
-            // Tocar Novo
-            if(t && t.blob) {
-                initAudio();
-                const url = URL.createObjectURL(t.blob);
-                audioEl.src = url;
-                
-                // Conectar ao visualizador
-                if(audioSourceNode) audioSourceNode.disconnect();
-                audioSourceNode = audioCtx.createMediaElementSource(audioEl);
-                audioSourceNode.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                
-                audioEl.play();
-                playingId = id;
-                document.getElementById('vis-text').style.display = 'none';
-            }
-            updateState();
+        // --- PLAYER SISTEMA ROBUSTO (SEM TRAVAR) ---
+        function stopPlayer() {
+            player.pause();
+            player.src = "";
+            player.load(); // Força limpeza do buffer
+            playingId = null;
         }
 
-        window.jumpToVinheta = (id) => {
+        window.playTrack = (id) => {
+            const t = tracks.find(x => x.id === id);
+            
+            // Se clicar no que já tá tocando, pausa
+            if(playingId === id) {
+                if(player.paused) player.play(); else player.pause();
+                updateState();
+                return;
+            }
+
+            // Se for novo, para o anterior e toca o novo
+            if(t && t.blob) {
+                stopPlayer(); // Reseta tudo antes de começar
+                playingId = id;
+                updateState();
+
+                const url = URL.createObjectURL(t.blob);
+                player.src = url;
+                player.play()
+                    .then(() => updateState())
+                    .catch(err => {
+                        console.error("Erro player:", err);
+                        notify("Erro ao reproduzir. Tente novamente.", "error");
+                        stopPlayer();
+                        updateState();
+                    });
+            }
+        }
+
+        window.seekToVinheta = (id) => {
             const t = tracks.find(x => x.id === id);
             if(!t || !t.blob) return;
 
-            if(playingId !== id) togglePlay(id);
-            
-            // Pular para 2s antes
-            setTimeout(() => {
-                const targetTime = Math.max(0, t.vinhetaTime - 2);
-                audioEl.currentTime = targetTime;
-                notify(`Preview em ${formatTime(targetTime)}`);
-            }, 100);
+            // Se não é o atual, carrega e toca
+            if(playingId !== id) {
+                playTrack(id);
+                // Pequeno delay para garantir que carregou
+                setTimeout(() => {
+                    if(!player.error) {
+                        const time = Math.max(0, t.vinhetaTime - 2);
+                        player.currentTime = time;
+                        notify(`Pulo para ${formatTime(time)}`);
+                    }
+                }, 300);
+            } else {
+                // Se já é o atual
+                const time = Math.max(0, t.vinhetaTime - 2);
+                player.currentTime = time;
+                if(player.paused) player.play();
+                notify(`Pulo para ${formatTime(time)}`);
+            }
         }
 
-        audioEl.onended = () => { playingId = null; document.getElementById('vis-text').style.display = 'block'; updateState(); };
+        player.onended = () => { playingId = null; updateState(); };
+        player.onpause = () => { updateState(); };
+        player.onplay = () => { updateState(); };
 
         function formatTime(sec) {
             const m = Math.floor(sec/60);
@@ -419,59 +381,69 @@
             return `${m}:${s<10?'0':''}${s}`;
         }
 
-        // --- AI ANALYZER (DROP DETECTOR) ---
-        function analyzeStructure(buffer, vinhetaDuration) {
+        // --- ALGORITMO GAP HUNTER (Busca de Buracos) ---
+        function findSafeSpot(buffer, vDuration) {
             const sr = buffer.sampleRate;
-            const data = buffer.getChannelData(0);
+            const data = buffer.getChannelData(0); 
             const duration = buffer.duration;
 
-            // Se for curta demais, bota no meio
-            if(duration < 90) return (duration/2) - (vinhetaDuration/2);
-
-            // ANALISAR O FINAL (Últimos 40% da música)
-            // Procuramos um "Drop" (aumento súbito de energia) ou uma parte calma.
+            // ZONA SEGURA: Ignora primeiros 15s e últimos 30s
+            const startScan = 15 * sr;
+            const endScan = (duration - 30) * sr;
             
-            // Janela de busca: Do meio até 10s antes do fim
-            const startScan = Math.floor(duration * 0.5 * sr);
-            const endScan = Math.floor((duration - 20) * sr);
-            const blockSize = sr; // 1 segundo por bloco
+            // Se a música for muito curta, retorna o meio
+            if(startScan >= endScan) return (duration / 2) - (vDuration / 2);
 
-            let maxEnergyJump = 0;
-            let dropTime = endScan / sr;
+            // Analisa a onda em blocos
+            const windowSize = Math.floor(sr * 0.5); // 0.5s por bloco
+            const scores = [];
 
-            // Percorre procurando o maior aumento de energia (Drop)
-            let prevEnergy = 0;
-
-            for(let i = startScan; i < endScan; i+=blockSize) {
-                let energy = 0;
-                for(let j=0; j<100; j++) { // Amostragem rápida
-                    energy += Math.abs(data[i + j*10]);
+            for(let i = startScan; i < endScan; i += windowSize) {
+                let sum = 0;
+                let peak = 0;
+                
+                // Amostragem para calcular "bagunça" (RMS)
+                for(let j = 0; j < windowSize; j += 100) {
+                    const val = Math.abs(data[i + j]);
+                    sum += val;
+                    if(val > peak) peak = val;
                 }
                 
-                // Se a energia dobrou, é um drop
-                if(i > startScan && energy > prevEnergy * 1.5) {
-                    if (energy - prevEnergy > maxEnergyJump) {
-                        maxEnergyJump = energy - prevEnergy;
-                        dropTime = i / sr;
-                    }
-                }
-                prevEnergy = energy;
+                const avg = sum / (windowSize / 100);
+                
+                // Score baixo = Bom (Instrumental/Calmo)
+                // Score alto = Ruim (Voz Alta/Gritaria)
+                let score = avg; 
+                
+                // Penalidades
+                if (avg < 0.01) score = 10; // Muito silêncio (fim da música falso)
+                if (peak > 0.8) score += 5; // Picos muito altos (Batida forte/Voz)
+
+                scores.push({ time: i / sr, score: score });
             }
 
-            // O PONTO IDEAL:
-            // O drop acontece em `dropTime`. 
-            // Queremos que a vinheta TERMINE um pouco antes do drop explodir.
-            // Formula: DropTime - VinhetaDuration - 2s (Respiro)
-            let placement = dropTime - vinhetaDuration - 2;
+            // Janela Deslizante: Acha a sequência de blocos com menor score
+            const blocksNeeded = Math.ceil(vDuration / 0.5);
+            
+            let bestTime = startScan / sr;
+            let lowestTotalScore = Infinity;
 
-            // Segurança: Se o calculo jogar pro começo negativo, ou muito perto do fim
-            if (placement < 10) placement = 10;
-            if (placement > duration - 20) placement = duration - 30;
+            for(let i = 0; i <= scores.length - blocksNeeded; i++) {
+                let currentTotalScore = 0;
+                for(let j = 0; j < blocksNeeded; j++) {
+                    currentTotalScore += scores[i+j].score;
+                }
 
-            return placement;
+                if(currentTotalScore < lowestTotalScore) {
+                    lowestTotalScore = currentTotalScore;
+                    bestTime = scores[i].time;
+                }
+            }
+
+            return bestTime;
         }
 
-        // --- UPDATE UI ---
+        // --- UI ---
         function updateState() {
             const list = document.getElementById('list-container');
             const empty = document.getElementById('empty-msg');
@@ -484,53 +456,61 @@
 
             if(tracks.length > 0) {
                 list.classList.remove('hidden');
+                empty.classList.add('hidden');
                 
                 list.innerHTML = tracks.map(t => {
-                    const isPlaying = playingId === t.id;
+                    const isPlaying = playingId === t.id && !player.paused;
                     let controls = '';
 
                     if(t.status === 'done') {
                         controls = `
                         <div class="flex items-center gap-2">
-                            <!-- BOTÃO DOWNLOAD INDIVIDUAL -->
                             <button onclick="downloadSingle('${t.id}')" title="Baixar" class="w-8 h-8 rounded-lg bg-slate-800 text-blue-400 border border-blue-900/30 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center">
                                 <i data-lucide="arrow-down-to-line" class="w-4 h-4"></i>
                             </button>
                             
-                            <!-- BOTÃO PREVIEW VINHETA -->
-                            <button onclick="jumpToVinheta('${t.id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-[10px] font-bold flex items-center gap-1 border border-slate-700 hover:border-blue-500 active:scale-95 transition-all">
+                            <button onclick="seekToVinheta('${t.id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-[10px] font-bold flex items-center gap-1 border border-slate-700 hover:border-blue-500 active:scale-95 transition-all">
                                 <span>VINHETA</span>
                                 <span class="text-blue-500">${formatTime(t.vinhetaTime)}</span>
                             </button>
 
-                            <!-- PLAY/PAUSE -->
-                            <button onclick="togglePlay('${t.id}')" class="w-8 h-8 rounded-full ${isPlaying ? 'bg-white text-black animate-pulse' : 'bg-blue-600 text-white'} flex items-center justify-center transition-colors shadow-lg shadow-blue-900/30">
+                            <button onclick="playTrack('${t.id}')" class="w-8 h-8 rounded-full ${isPlaying ? 'bg-white text-black' : 'bg-blue-600 text-white'} flex items-center justify-center transition-colors shadow-lg shadow-blue-900/30">
                                 <i data-lucide="${isPlaying ? 'pause' : 'play'}" class="w-3 h-3 fill-current"></i>
                             </button>
                         </div>`;
                     } else if (t.status === 'processing') {
-                         controls = `<span class="text-[10px] text-blue-400 animate-pulse">PROCESSANDO...</span>`;
+                         controls = `<span class="text-[10px] text-blue-400 animate-pulse font-mono">CALCULANDO...</span>`;
                     } else if (t.status === 'downloaded') {
-                        controls = `<span class="text-[10px] text-green-400 flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> BAIXADO</span>`;
+                        controls = `<span class="text-[10px] text-green-400 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> OK</span>`;
+                    }
+
+                    // Progress Bar Simples (Visual)
+                    let bar = '';
+                    if(t.status === 'done' && isPlaying) {
+                        bar = `<div class="w-full h-1 bg-slate-800 mt-2 rounded-full overflow-hidden"><div class="h-full bg-green-500 animate-pulse w-full"></div></div>`;
                     }
 
                     return `
-                    <div class="card p-3 flex items-center justify-between group border-l-2 ${t.status==='done'?'border-l-blue-500':'border-l-transparent'}">
-                        <div class="flex items-center gap-3 overflow-hidden flex-1">
-                            <div class="min-w-0">
-                                <div class="text-xs text-white truncate font-medium">${t.originalName}</div>
-                                <div class="text-[10px] text-slate-500">${t.msg}</div>
+                    <div class="card p-3 group border-l-2 ${t.status==='done'?'border-l-blue-500':'border-l-transparent'}">
+                        <div class="flex justify-between items-center mb-1">
+                            <div class="flex items-center gap-3 overflow-hidden flex-1">
+                                <div class="min-w-0">
+                                    <div class="text-xs text-white truncate font-medium">${t.originalName}</div>
+                                    <div class="text-[10px] text-slate-500">${t.msg}</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pl-2">
+                                ${controls}
+                                ${t.status !== 'done' ? `<button onclick="remTrack('${t.id}')" class="p-2 text-slate-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
                             </div>
                         </div>
-                        <div class="flex items-center gap-3 pl-2">
-                            ${controls}
-                            ${t.status !== 'done' ? `<button onclick="remTrack('${t.id}')" class="p-2 text-slate-600 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
-                        </div>
+                        ${bar}
                     </div>`;
                 }).join('');
                 lucide.createIcons();
             } else {
                 list.classList.add('hidden');
+                empty.classList.remove('hidden');
             }
 
             const canProcess = activeV && tracks.length > 0;
@@ -539,10 +519,10 @@
             if(isProcessing) {
                 btn.disabled = true; 
                 btn.className = "flex-1 bg-slate-800 text-slate-500 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
-                btn.innerHTML = `<i data-lucide="cpu" class="w-4 h-4 animate-spin"></i> CALCULANDO IA...`;
+                btn.innerHTML = `<i data-lucide="cpu" class="w-4 h-4 animate-spin"></i> PROCESSANDO...`;
             } else if(hasSuccess && !isProcessing && tracks.every(t=>t.status==='done' || t.status==='error' || t.status==='downloaded')) {
                 btn.className = "flex-1 bg-slate-900 text-slate-500 h-14 rounded-xl font-bold text-sm flex items-center justify-center gap-2";
-                btn.innerText = "FINALIZADO";
+                btn.innerText = "CONCLUÍDO";
                 btn.disabled = true;
                 btnDown.classList.remove('hidden');
             } else if(canProcess) {
@@ -559,10 +539,11 @@
             lucide.createIcons();
         }
 
-        // --- PROCESSAMENTO PRINCIPAL ---
+        // --- CORE PROCESSOR ---
         async function startProcessing() {
             if(isProcessing) return;
             initAudio();
+            stopPlayer();
             isProcessing = true; 
             updateState();
 
@@ -576,7 +557,7 @@
                 if(tracks[i].status !== 'pending') continue;
 
                 tracks[i].status = 'processing'; 
-                tracks[i].msg = 'Analisando Estrutura...';
+                tracks[i].msg = 'Analisando...';
                 updateState();
                 await new Promise(r => setTimeout(r, 20));
 
@@ -589,15 +570,15 @@
                     const tDur = trackBuffer.duration;
                     let startTime = 0;
 
-                    // --- IA DE POSICIONAMENTO ---
-                    if (posMode === 'dropMatch') {
-                        // Acha o drop e subtrai o tempo da vinheta
-                        startTime = analyzeStructure(trackBuffer, vDur);
-                    } else if (posMode === 'calmSpot') {
-                        // Acha o meio termo (simples)
-                        startTime = (tDur / 2) - (vDur / 2);
+                    if (posMode === 'gapHunter') {
+                        // IA: Procura buracos na voz
+                        startTime = findSafeSpot(trackBuffer, vDur);
+                    } else if (posMode === 'startFade') {
+                        // NOVO: Começa no 0
+                        startTime = 0;
                     } else {
-                        startTime = Math.min(10, tDur/4);
+                        // Matemático: 35s antes do fim
+                        startTime = Math.max(0, tDur - vDur - 35);
                     }
                     
                     tracks[i].vinhetaTime = startTime;
@@ -608,44 +589,50 @@
                     const musicGain = offlineCtx.createGain();
                     const vinhetaGain = offlineCtx.createGain();
 
-                    // MIXAGEM
-                    if (mixMode === 'ducking') {
-                        // Baixa a música suavemente
+                    // LÓGICA DE FADE/DUCKING
+                    if (posMode === 'startFade') {
+                        // NOVO: Música começa baixa e sobe
+                        musicGain.gain.setValueAtTime(0.2, 0); // Começa em 20%
+                        musicGain.gain.setValueAtTime(0.2, vDur); // Mantém até vinheta acabar
+                        musicGain.gain.linearRampToValueAtTime(1.0, vDur + 2.0); // Sobe para 100% em 2s
+                        vinhetaGain.gain.value = 1.0;
+                    } else if (mixMode === 'ducking') {
+                        // Padrão: Baixa quando a vinheta entra
                         musicGain.gain.setValueAtTime(1, startTime);
                         musicGain.gain.linearRampToValueAtTime(0.25, startTime + 0.3);
                         musicGain.gain.setValueAtTime(0.25, startTime + vDur - 0.3);
                         musicGain.gain.linearRampToValueAtTime(1, startTime + vDur);
-                        vinhetaGain.gain.value = 1.1; // Vinheta +10%
+                        vinhetaGain.gain.value = 1.1; 
                     } else {
-                        // Overlay (Colagem)
+                        // Overlay
                         musicGain.gain.value = 1.0;
-                        vinhetaGain.gain.value = 1.3; // Vinheta +30%
+                        vinhetaGain.gain.value = 1.3; 
                     }
 
                     musicSrc.connect(musicGain); musicGain.connect(offlineCtx.destination);
                     vinhetaSrc.connect(vinhetaGain); vinhetaGain.connect(offlineCtx.destination);
-                    
-                    musicSrc.start(0); 
-                    vinhetaSrc.start(startTime);
+                    musicSrc.start(0); vinhetaSrc.start(startTime);
 
-                    tracks[i].msg = 'Renderizando WAV...'; updateState();
+                    tracks[i].msg = 'Gerando...'; updateState();
                     const renderedBuffer = await offlineCtx.startRendering();
                     tracks[i].blob = bufferToWave(renderedBuffer, renderedBuffer.length);
                     tracks[i].status = 'done';
-                    tracks[i].msg = `Pronto (Vinheta em ${formatTime(startTime)})`;
                     
-                    // Limpar RAM
+                    let timeLabel = posMode === 'startFade' ? 'Início' : formatTime(startTime);
+                    tracks[i].msg = `Pronto (${timeLabel})`;
+                    
                     tracks[i].file = null; 
 
                 } catch(e) {
                     tracks[i].status = 'error';
-                    tracks[i].msg = 'Erro ao processar';
+                    tracks[i].msg = 'Erro';
+                    console.error(e);
                 }
             }
 
             isProcessing = false;
             updateState();
-            if(tracks.some(t => t.status === 'done')) notify("Mixagem concluída!", "success");
+            if(tracks.some(t => t.status === 'done')) notify("Concluído!", "success");
         }
 
         // --- WAV ENCODER ---
@@ -667,16 +654,11 @@
         }
 
         // --- DOWNLOAD SYSTEM ---
-        
-        // 1. Download Individual
         function downloadSingle(id) {
             const t = tracks.find(x => x.id === id);
-            if(t && t.blob) {
-                triggerDownload(t);
-            }
+            if(t && t.blob) triggerDownload(t);
         }
 
-        // 2. Download Sequencial (Smart Queue)
         async function downloadAllSequence() {
             if(isDownloadingAll) return;
             isDownloadingAll = true;
@@ -695,16 +677,11 @@
                 return;
             }
 
-            notify(`Iniciando download de ${doneTracks.length} arquivos...`);
-
-            // Loop com delay para não travar o browser
             for(let i = 0; i < doneTracks.length; i++) {
                 triggerDownload(doneTracks[i]);
                 doneTracks[i].status = 'downloaded';
                 updateState();
-                
-                // Espera 1.2 segundos entre downloads
-                await new Promise(r => setTimeout(r, 1200));
+                await new Promise(r => setTimeout(r, 1200)); 
             }
 
             notify("Downloads finalizados!", "success");
@@ -718,7 +695,7 @@
             const url = URL.createObjectURL(t.blob);
             a.href = url;
             let safeName = t.originalName.replace(/\.[^/.]+$/, "");
-            a.download = `${safeName} (SuitCds).wav`;
+            a.download = `${safeName} (Mix).wav`;
             document.body.appendChild(a);
             a.click();
             setTimeout(() => {
